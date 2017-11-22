@@ -97,7 +97,7 @@ namespace GitHub.VisualStudio.UI.Views
 
                 using (workingDirectory ? null : OpenInProvisionalTab())
                 {
-                    var window = Services.Dte.ItemOperations.OpenFile(fileName);
+                    var window = GitHub.VisualStudio.Services.Dte.ItemOperations.OpenFile(fileName);
                     window.Document.ReadOnly = !workingDirectory;
 
                     var buffer = GetBufferAt(fileName);
@@ -144,7 +144,7 @@ namespace GitHub.VisualStudio.UI.Views
                     var tooltip = $"{leftLabel}\nvs.\n{rightLabel}";
 
                     // Diff window will open in provisional (right hand) tab until document is touched.
-                    frame = Services.DifferenceService.OpenComparisonWindow2(
+                    frame = GitHub.VisualStudio.Services.DifferenceService.OpenComparisonWindow2(
                         leftFile,
                         rightFile,
                         caption,
@@ -198,7 +198,7 @@ namespace GitHub.VisualStudio.UI.Views
 
         void ShowErrorInStatusBar(string message, Exception e)
         {
-            var ns = Services.DefaultExportProvider.GetExportedValue<IStatusBarNotificationService>();
+            var ns = GitHub.VisualStudio.Services.DefaultExportProvider.GetExportedValue<IStatusBarNotificationService>();
             ns?.ShowMessage(message + ": " + e.Message);
         }
 
@@ -225,13 +225,13 @@ namespace GitHub.VisualStudio.UI.Views
 
         ITextBuffer GetBufferAt(string filePath)
         {
-            var editorAdapterFactoryService = Services.ComponentModel.GetService<IVsEditorAdaptersFactoryService>();
+            var editorAdapterFactoryService = GitHub.VisualStudio.Services.ComponentModel.GetService<IVsEditorAdaptersFactoryService>();
             IVsUIHierarchy uiHierarchy;
             uint itemID;
             IVsWindowFrame windowFrame;
 
             if (VsShellUtilities.IsDocumentOpen(
-                Services.GitHubServiceProvider,
+                GitHub.VisualStudio.Services.GitHubServiceProvider,
                 filePath,
                 Guid.Empty,
                 out uiHierarchy,
@@ -296,7 +296,7 @@ namespace GitHub.VisualStudio.UI.Views
         void ViewCommentsClick(object sender, RoutedEventArgs e)
         {
             var model = (object)ViewModel.Model;
-            Services.Dte.Commands.Raise(
+            GitHub.VisualStudio.Services.Dte.Commands.Raise(
                 Guids.CommandSetString,
                 PkgCmdIDList.ShowPullRequestCommentsId,
                 ref model,
@@ -322,7 +322,7 @@ namespace GitHub.VisualStudio.UI.Views
                     // to the first changed line. There must be a better way of doing this.
                     await Task.Delay(1500);
 
-                    Services.Dte.Commands.Raise(
+                    GitHub.VisualStudio.Services.Dte.Commands.Raise(
                         Guids.CommandSetString,
                         PkgCmdIDList.NextInlineCommentId,
                         ref param,

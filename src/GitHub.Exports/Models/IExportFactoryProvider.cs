@@ -3,6 +3,8 @@ using GitHub.UI;
 using GitHub.ViewModels;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System;
+using System.Windows;
 
 namespace GitHub.Models
 {
@@ -12,5 +14,6 @@ namespace GitHub.Models
         IEnumerable<ExportFactory<IView, IViewModelMetadata>> ViewFactory { get; set; }
         ExportLifetimeContext<IViewModel> GetViewModel(UIViewType viewType);
         ExportLifetimeContext<IView> GetView(UIViewType viewType);
+        ExportLifetimeContext<FrameworkElement> CreateNewView(Type viewModelType);
     }
 }

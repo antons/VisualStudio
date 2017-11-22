@@ -147,13 +147,17 @@
     <Compile Include="Models\IPullRequestReviewCommentModel.cs" />
     <Compile Include="Services\IGlobalConnection.cs" />
     <Compile Include="Services\ILocalRepositories.cs" />
+    <Compile Include="Services\IShowDialogService.cs" />
     <Compile Include="Services\IVisualStudioBrowser.cs" />
     <Compile Include="Models\UsageData.cs" />
     <Compile Include="Services\IUsageService.cs" />
     <Compile Include="Settings\PkgCmdID.cs" />
+    <Compile Include="ViewModels\Dialog\IDialogContentViewModel.cs" />
+    <Compile Include="ViewModels\IConnectionInitializedViewModel.cs" />
     <Compile Include="ViewModels\IGitHubPaneViewModel.cs" />
     <Compile Include="ViewModels\IHasErrorState.cs" />
     <Compile Include="ViewModels\IHasLoading.cs" />
+    <Compile Include="ViewModels\INewViewModel.cs" />
     <Compile Include="ViewModels\ISearchablePageViewModel.cs" />
     <Compile Include="ViewModels\IPanePageViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />

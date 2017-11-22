@@ -319,6 +319,7 @@
     <Compile Include="Helpers\Browser.cs" />
     <Compile Include="Services\JsonConnectionCache.cs" />
     <Compile Include="Services\LocalRepositories.cs" />
+    <Compile Include="Services\ShowDialogService.cs" />
     <Compile Include="Services\UIProvider.cs" />
     <Compile Include="Services\UsageService.cs" />
     <Compile Include="Services\UsageTracker.cs" />
@@ -390,6 +391,13 @@
     <Compile Include="UI\WindowController.xaml.cs">
       <DependentUpon>WindowController.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialog\GitHubDialogWindow.xaml.cs">
+      <DependentUpon>GitHubDialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialog\NewLoginView.xaml.cs">
+      <DependentUpon>NewLoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ViewLocator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VSPackage.resx">
@@ -550,6 +558,14 @@
     </Page>
     <Page Include="UI\WindowController.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialog\GitHubDialogWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialog\NewLoginView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

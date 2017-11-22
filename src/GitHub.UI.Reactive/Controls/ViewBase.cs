@@ -290,4 +290,149 @@ namespace GitHub.UI
             return new UIElementAutomationPeer(this);
         }
     }
+
+    /// <summary>
+    /// Base class for views.
+    /// </summary>
+    /// <remarks>
+    /// Exposes a typed <see cref="ViewModel"/> property and optionally displays <see cref="IHasLoading.IsLoading"/> 
+    /// <see cref="IHasBusy.IsBusy"/> and <see cref="IHasErrorState.ErrorMessage"/> state if the view model implements
+    /// those interfaces. In addition, if the view model is an <see cref="IDialogViewModel"/>, invokes 
+    /// <see cref="IDialogViewModel.Cancel"/> when the escape key is pressed.
+    /// </remarks>
+    public class NewViewBase<TInterface, TImplementor> : ViewBase, IViewFor<TInterface>, IDisposable
+        where TInterface : class, INewViewModel
+        where TImplementor : class
+    {
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+            "ViewModel", typeof(TInterface), typeof(TImplementor), new PropertyMetadata(null));
+
+        IDisposable subscriptions;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ViewBase{TInterface, TImplementor}"/> class.
+        /// </summary>
+        public NewViewBase()
+        {
+            DataContextChanged += (s, e) =>
+            {
+                subscriptions?.Dispose();
+                ViewModel = (TInterface)e.NewValue;
+
+                var hasLoading = ViewModel as IHasLoading;
+                var hasBusy = ViewModel as IHasBusy;
+                var hasErrorState = ViewModel as IHasErrorState;
+                var subs = new CompositeDisposable();
+
+                if (hasLoading != null)
+                {
+                    subs.Add(this.OneWayBind(hasLoading, x => x.IsLoading, x => x.IsLoading));
+                }
+
+                if (hasBusy != null)
+                {
+                    subs.Add(this.OneWayBind(hasBusy, x => x.IsBusy, x => x.IsBusy));
+                }
+
+                if (hasErrorState != null)
+                {
+                    subs.Add(this.OneWayBind(hasErrorState, x => x.ErrorMessage, x => x.ErrorMessage));
+                }
+
+                HasState = hasLoading != null || hasBusy != null;
+                subscriptions = subs;
+            };
+
+            this.WhenActivated(d =>
+            {
+                d(this.Events()
+                    .KeyUp
+                    .Where(x => x.Key == Key.Escape && !x.Handled)
+                    .Subscribe(key =>
+                    {
+                        key.Handled = true;
+                        (this.ViewModel as IDialogViewModel)?.Cancel.Execute(null);
+                    }));
+            });
+
+            this.WhenAnyValue(
+                x => x.IsLoading,
+                x => x.ErrorMessage,
+                (l, m) => !l && m == null)
+                .Subscribe(x => ShowContent = x);
+        }
+
+        /// <summary>
+        /// Gets or sets the control's data context as a typed view model.
+        /// </summary>
+        public TInterface ViewModel
+        {
+            get { return (TInterface)GetValue(ViewModelProperty); }
+            set { SetValue(ViewModelProperty, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the control's data context as a typed view model. Required for interaction
+        /// with ReactiveUI.
+        /// </summary>
+        TInterface IViewFor<TInterface>.ViewModel
+        {
+            get { return ViewModel; }
+            set { ViewModel = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the control's data context. Required for interaction with ReactiveUI.
+        /// </summary>
+        object IViewFor.ViewModel
+        {
+            get { return ViewModel; }
+            set { ViewModel = (TInterface)value; }
+        }
+
+        bool disposed;
+        /// <summary>
+        /// Releases the managed or unmanaged resources held by the control.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    subscriptions?.Dispose();
+                    subscriptions = null;
+                }
+
+                disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// The control finalizer.
+        /// </summary>
+        ~NewViewBase()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// Releases the managed resources held by the control.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///  Add an automation peer to views and custom controls 
+        ///  They do not have automation peers or properties by default
+        ///  https://stackoverflow.com/questions/30198109/automationproperties-automationid-on-custom-control-not-exposed
+        /// </summary>
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new UIElementAutomationPeer(this);
+        }
+    }
 }

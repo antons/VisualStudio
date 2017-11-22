@@ -7,6 +7,8 @@ using GitHub.Exports;
 using GitHub.UI;
 using GitHub.ViewModels;
 using GitHub.Models;
+using System.Windows;
+using System;
 
 namespace GitHub.Services
 {
@@ -25,6 +27,9 @@ namespace GitHub.Services
 
         [ImportMany(AllowRecomposition = true)]
         public IEnumerable<ExportFactory<IView, IViewModelMetadata>> ViewFactory { get; set; }
+
+        [ImportMany(AllowRecomposition = true)]
+        public IEnumerable<ExportFactory<FrameworkElement, INewViewModelMetadata>> NewViewFactory { get; set; }
 
         public ExportLifetimeContext<IViewModel> GetViewModel(UIViewType viewType)
         {
@@ -53,6 +58,12 @@ namespace GitHub.Services
             }
 
             return f.CreateExport();
+        }
+
+        public ExportLifetimeContext<FrameworkElement> CreateNewView(Type viewModelType)
+        {
+            var f = NewViewFactory.FirstOrDefault(x => x.Metadata.ViewModelType == viewModelType);
+            return f?.CreateExport();
         }
     }
 }

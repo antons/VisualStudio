@@ -32,5 +32,7 @@ namespace GitHub.Services
         /// out a repository that was previously checked out on another machine.
         /// </remarks>
         Task<string> ShowReCloneDialog(IRepositoryModel repository);
+
+        Task<IConnection> ShowLoginDialog();
     }
 }

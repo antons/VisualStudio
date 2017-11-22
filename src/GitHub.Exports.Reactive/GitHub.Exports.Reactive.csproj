@@ -120,6 +120,7 @@
     <Compile Include="Services\IPullRequestSessionManager.cs" />
     <Compile Include="Services\LocalRepositoriesExtensions.cs" />
     <Compile Include="Services\ModelServiceExtensions.cs" />
+    <Compile Include="ViewModels\Dialog\INewLoginViewModel.cs" />
     <Compile Include="ViewModels\IGistCreationViewModel.cs" />
     <Compile Include="Services\NotificationDispatcher.cs" />
     <Compile Include="ViewModels\IHasCancel.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="..\common\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="ViewModels\NewViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Factories\IApiClientFactory.cs" />

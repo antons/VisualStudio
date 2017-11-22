@@ -7,6 +7,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.Reflection;
 using GitHub.VisualStudio;
+using System.Windows;
 
 namespace GitHub.Exports
 {
@@ -82,6 +83,23 @@ namespace GitHub.Exports
     }
 
     /// <summary>
+    /// A MEF export attribute that defines an export of type <see cref="FrameworkElement"/> with
+    /// <see cref="ViewModelType"/> metadata.
+    /// </summary>
+    [MetadataAttribute]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public sealed class ExportViewForAttribute : ExportAttribute
+    {
+        public ExportViewForAttribute(Type viewModelType)
+            : base(typeof(FrameworkElement))
+        {
+            ViewModelType = viewModelType;
+        }
+
+        public Type ViewModelType { get; set; }
+    }
+
+    /// <summary>
     /// A MEF export attribute that defines an export of type <see cref="IMenuHandler"/> with
     /// <see cref="MenuType"/> metadata.
     /// </summary>
@@ -94,6 +112,19 @@ namespace GitHub.Exports
         }
 
         public MenuType MenuType { get; set; }
+    }
+
+    /// <summary>
+    /// Defines a MEF metadata view that matches <see cref="ExportViewModelForAttribute"/> and
+    /// <see cref="ExportViewForAttribute"/>.
+    /// </summary>
+    /// <remarks>
+    /// For more information see the Metadata and Metadata views section at
+    /// https://msdn.microsoft.com/en-us/library/ee155691(v=vs.110).aspx#Anchor_3
+    /// </remarks>
+    public interface INewViewModelMetadata
+    {
+        Type ViewModelType { get; }
     }
 
     /// <summary>

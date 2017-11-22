@@ -5,6 +5,7 @@ using GitHub.Extensions;
 using GitHub.Models;
 using GitHub.UI;
 using GitHub.ViewModels;
+using GitHub.ViewModels.Dialog;
 
 namespace GitHub.Services
 {
@@ -12,14 +13,23 @@ namespace GitHub.Services
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class DialogService : IDialogService
     {
+        readonly IGitHubServiceProvider serviceProvider;
         readonly IUIProvider uiProvider;
+        readonly IShowDialogService showDialog;
 
         [ImportingConstructor]
-        public DialogService(IUIProvider uiProvider)
+        public DialogService(
+            IGitHubServiceProvider serviceProvider,
+            IUIProvider uiProvider,
+            IShowDialogService showDialog)
         {
+            Guard.ArgumentNotNull(serviceProvider, nameof(serviceProvider));
             Guard.ArgumentNotNull(uiProvider, nameof(uiProvider));
+            Guard.ArgumentNotNull(showDialog, nameof(showDialog));
 
+            this.serviceProvider = serviceProvider;
             this.uiProvider = uiProvider;
+            this.showDialog = showDialog;
         }
 
         public Task<CloneDialogResult> ShowCloneDialog(IConnection connection)
@@ -71,6 +81,13 @@ namespace GitHub.Services
             uiProvider.RunInDialog(controller);
 
             return Task.FromResult(basePath);
+        }
+
+        public Task<IConnection> ShowLoginDialog()
+        {
+            var viewModel = serviceProvider.ExportProvider.GetExportedValue<INewLoginViewModel>();
+            showDialog.Show(viewModel);
+            return Task.FromResult<IConnection>(null);
         }
     }
 }

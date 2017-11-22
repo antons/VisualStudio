@@ -66,7 +66,7 @@ namespace GitHub.VisualStudio.UI
             };
             ToolBar = new CommandID(Guids.guidGitHubToolbarCmdSet, PkgCmdIDList.idGitHubToolbar);
             ToolBarLocation = (int)VSTWT_LOCATION.VSTWT_TOP;
-            var provider = Services.GitHubServiceProvider;
+            var provider = GitHub.VisualStudio.Services.GitHubServiceProvider;
             var uiProvider = provider.GetServiceSafe<IUIProvider>();
             View = uiProvider.GetView(Exports.UIViewType.GitHubPane);
         }
