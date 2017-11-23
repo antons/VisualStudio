@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 using GitHub.Primitives;
 using ReactiveUI;
 
@@ -6,15 +7,22 @@ namespace GitHub.ViewModels.Dialog
 {
     public class GitHubDialogWindowViewModel : NewViewModelBase
     {
-        INewViewModel content;
+        IDialogContentViewModel content;
 
-        public INewViewModel Content
+        public GitHubDialogWindowViewModel()
+        {
+            Closed = this.WhenAnyObservable(x => x.Content.Closed);
+        }
+
+        public IDialogContentViewModel Content
         {
             get { return content; }
             private set { this.RaiseAndSetIfChanged(ref content, value); }
         }
 
-        public void Initialize(INewViewModel viewModel)
+        public IObservable<Unit> Closed { get; }
+
+        public void Initialize(IDialogContentViewModel viewModel)
         {
             Content = viewModel;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 
 namespace GitHub.ViewModels.Dialog
 {
@@ -13,8 +14,9 @@ namespace GitHub.ViewModels.Dialog
         string Title { get; }
 
         /// <summary>
-        /// Raised when the dialog should be closed.
+        /// Gets an observable that is signalled with a single value when the dialog should be
+        /// closed.
         /// </summary>
-        event EventHandler Closed;
+        IObservable<Unit> Closed { get; }
     }
 }

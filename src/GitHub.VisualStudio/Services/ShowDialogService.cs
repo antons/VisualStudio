@@ -12,7 +12,7 @@ namespace GitHub.VisualStudio.UI.Services
     [PartCreationPolicy(CreationPolicy.Shared)]
     public class ShowDialogService : IShowDialogService
     {
-        public void Show(INewViewModel viewModel)
+        public void Show(IDialogContentViewModel viewModel)
         {
             var dialogViewModel = new GitHubDialogWindowViewModel();
             dialogViewModel.Initialize(viewModel);

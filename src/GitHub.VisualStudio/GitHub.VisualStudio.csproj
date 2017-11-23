@@ -394,8 +394,14 @@
     <Compile Include="Views\Dialog\GitHubDialogWindow.xaml.cs">
       <DependentUpon>GitHubDialogWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialog\LoginCredentialsView.xaml.cs">
+      <DependentUpon>LoginCredentialsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialog\NewLoginView.xaml.cs">
       <DependentUpon>NewLoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialog\Login2FaView.xaml.cs">
+      <DependentUpon>Login2FaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ViewLocator.cs" />
   </ItemGroup>
@@ -563,7 +569,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Dialog\LoginCredentialsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Dialog\NewLoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialog\Login2FaView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -1,6 +1,7 @@
 ﻿using System;
 using GitHub.Primitives;
 using GitHub.ViewModels;
+using GitHub.ViewModels.Dialog;
 
 namespace GitHub.Services
 {
@@ -18,7 +19,7 @@ namespace GitHub.Services
         /// Shows a view model in the dialog.
         /// </summary>
         /// <param name="viewModel">The view model to show.</param>
-        void Show(INewViewModel viewModel);
+        void Show(IDialogContentViewModel viewModel);
 
         /// <summary>
         /// Shows a view model that requires a connection in the dialog.

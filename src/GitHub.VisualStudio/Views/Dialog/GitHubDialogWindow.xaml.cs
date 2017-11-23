@@ -12,6 +12,7 @@ namespace GitHub.VisualStudio.Views.Dialog
         public GitHubDialogWindow(GitHubDialogWindowViewModel viewModel)
         {
             DataContext = viewModel;
+            viewModel.Closed.Subscribe(_ => Close());
             InitializeComponent();
         }
     }

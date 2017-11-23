@@ -11,12 +11,12 @@ using ReactiveUI;
 
 namespace GitHub.ViewModels.Dialog
 {
-    [Export(typeof(INewLoginViewModel))]
+    [Export(typeof(ILoginCredentialsViewModel))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class LoginViewModel : NewViewModelBase, INewLoginViewModel
+    public class LoginCredentialsViewModel : NewViewModelBase, ILoginCredentialsViewModel
     {
         [ImportingConstructor]
-        public LoginViewModel(
+        public LoginCredentialsViewModel(
             IConnectionManager connectionManager,
             ILoginToGitHubViewModel loginToGitHubViewModel,
             ILoginToGitHubForEnterpriseViewModel loginToGitHubEnterpriseViewModel)
@@ -37,7 +37,10 @@ namespace GitHub.ViewModels.Dialog
             AuthenticationResults = Observable.Merge(
                 loginToGitHubViewModel.Login,
                 loginToGitHubViewModel.LoginViaOAuth,
-                EnterpriseLogin.Login);
+                EnterpriseLogin.Login,
+                EnterpriseLogin.LoginViaOAuth);
+
+            Closed = AuthenticationResults.Where(x => x == AuthenticationResult.Success).SelectUnit();
         }
 
         public string Title => Resources.LoginTitle;
@@ -56,17 +59,7 @@ namespace GitHub.ViewModels.Dialog
         public bool IsLoginInProgress { get { return isLoginInProgress.Value; } }
 
         public IObservable<AuthenticationResult> AuthenticationResults { get; private set; }
-
-        event EventHandler IDialogContentViewModel.Closed
-        {
-            add { }
-            remove { }
-        }
-
-        public IObservable<Unit> Done
-        {
-            get { return AuthenticationResults.Where(x => x == AuthenticationResult.Success).SelectUnit(); }
-        }
+        public IObservable<Unit> Closed { get; }
 
         void UpdateLoginMode()
         {

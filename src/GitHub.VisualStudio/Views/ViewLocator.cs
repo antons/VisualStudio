@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using GitHub.Exports;
 using GitHub.Models;
+using GitHub.Services;
 using GitHub.ViewModels;
 
 namespace GitHub.VisualStudio.Views
@@ -51,6 +53,14 @@ namespace GitHub.VisualStudio.Views
                     return result;
                 }
             }
+
+#if DEBUG
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                var catalog = new AssemblyCatalog(typeof(ExportFactoryProvider).Assembly);
+                System.Diagnostics.Debugger.Break();
+            }
+#endif
 
             return $"Could not locate view for '{value.GetType()}'";
         }
