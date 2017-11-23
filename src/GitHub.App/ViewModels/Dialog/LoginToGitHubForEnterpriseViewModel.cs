@@ -5,7 +5,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using GitHub.Api;
 using GitHub.App;
-using GitHub.Authentication;
 using GitHub.Extensions;
 using GitHub.Info;
 using GitHub.Primitives;
@@ -13,6 +12,7 @@ using GitHub.Services;
 using GitHub.Validation;
 using Octokit;
 using ReactiveUI;
+using IConnection = GitHub.Models.IConnection;
 
 namespace GitHub.ViewModels.Dialog
 {
@@ -67,15 +67,14 @@ namespace GitHub.ViewModels.Dialog
             });
         }
 
-        protected override IObservable<AuthenticationResult> LogIn(object args)
+        protected override Task<IConnection> LogIn(object args)
         {
             return LogInToHost(HostAddress.Create(EnterpriseUrl));
         }
 
-        protected override async Task<AuthenticationResult> LogInViaOAuth(object args)
+        protected override Task<IConnection> LogInViaOAuth(object args)
         {
-            await LoginToHostViaOAuth(HostAddress.Create(EnterpriseUrl));
-            return AuthenticationResult.Success;
+            return LoginToHostViaOAuth(HostAddress.Create(EnterpriseUrl));
         }
 
         string enterpriseUrl;

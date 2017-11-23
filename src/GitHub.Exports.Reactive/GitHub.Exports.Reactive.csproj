@@ -122,6 +122,8 @@
     <Compile Include="Services\LocalRepositoriesExtensions.cs" />
     <Compile Include="Services\ModelServiceExtensions.cs" />
     <Compile Include="ViewModels\Dialog\IDialogContentViewModel.cs" />
+    <Compile Include="ViewModels\Dialog\IGitHubDialogWindowViewModel.cs" />
+    <Compile Include="ViewModels\Dialog\INewGistCreationViewModel.cs" />
     <Compile Include="ViewModels\Dialog\ILogin2FaViewModel.cs" />
     <Compile Include="ViewModels\Dialog\ILoginCredentialsViewModel.cs" />
     <Compile Include="ViewModels\Dialog\INewLoginViewModel.cs" />

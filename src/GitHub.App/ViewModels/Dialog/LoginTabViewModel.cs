@@ -11,6 +11,7 @@ using GitHub.Extensions;
 using GitHub.Extensions.Reactive;
 using GitHub.Info;
 using GitHub.Logging;
+using GitHub.Models;
 using GitHub.Primitives;
 using GitHub.Services;
 using GitHub.Validation;
@@ -46,7 +47,7 @@ namespace GitHub.ViewModels.Dialog
                 x => x.PasswordValidator.ValidationResult.IsValid,
                 (x, y) => x.Value && y.Value).ToProperty(this, x => x.CanLogin);
 
-            Login = ReactiveCommand.CreateAsyncObservable(this.WhenAny(x => x.CanLogin, x => x.Value), LogIn);
+            Login = ReactiveCommand.CreateAsyncTask(this.WhenAny(x => x.CanLogin, x => x.Value), LogIn);
             Login.ThrownExceptions.Subscribe(HandleError);
 
             LoginViaOAuth = ReactiveCommand.CreateAsyncTask(
@@ -74,8 +75,8 @@ namespace GitHub.ViewModels.Dialog
         protected abstract Uri BaseUri { get; }
         public IReactiveCommand<Unit> SignUp { get; }
 
-        public IReactiveCommand<AuthenticationResult> Login { get; }
-        public IReactiveCommand<AuthenticationResult> LoginViaOAuth { get; }
+        public IReactiveCommand<IConnection> Login { get; }
+        public IReactiveCommand<IConnection> LoginViaOAuth { get; }
         public IReactiveCommand<Unit> Reset { get; }
         public IRecoveryCommand NavigateForgotPassword { get; }
 
@@ -136,66 +137,22 @@ namespace GitHub.ViewModels.Dialog
 
         public void Deactivated() => oauthCancel?.Cancel();
 
-        protected abstract IObservable<AuthenticationResult> LogIn(object args);
-        protected abstract Task<AuthenticationResult> LogInViaOAuth(object args);
+        protected abstract Task<IConnection> LogIn(object args);
+        protected abstract Task<IConnection> LogInViaOAuth(object args);
 
-        protected IObservable<AuthenticationResult> LogInToHost(HostAddress hostAddress)
+        protected async Task<IConnection> LogInToHost(HostAddress hostAddress)
         {
             Guard.ArgumentNotNull(hostAddress, nameof(hostAddress));
 
-            return Observable.Defer(async () =>
+            if (await ConnectionManager.GetConnection(hostAddress) != null)
             {
-                if (hostAddress != null)
-                {
-                    if (await ConnectionManager.GetConnection(hostAddress) != null)
-                    {
-                        await ConnectionManager.LogOut(hostAddress);
-                    }
+                await ConnectionManager.LogOut(hostAddress);
+            }
 
-                    await ConnectionManager.LogIn(hostAddress, UsernameOrEmail, Password);
-                    return Observable.Return(AuthenticationResult.Success);
-                }
-
-                return Observable.Return(AuthenticationResult.CredentialFailure);
-            })
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Do(authResult => {
-                switch (authResult)
-                {
-                    case AuthenticationResult.CredentialFailure:
-                        Error = new UserError(
-                            Resources.LoginFailedText,
-                            Resources.LoginFailedMessage,
-                            new[] { NavigateForgotPassword });
-                        break;
-                    case AuthenticationResult.VerificationFailure:
-                        break;
-                    case AuthenticationResult.EnterpriseServerNotFound:
-                        Error = new UserError(Resources.CouldNotConnectToGitHub);
-                        break;
-                }
-            })
-            .SelectMany(authResult =>
-            {
-                switch (authResult)
-                {
-                    case AuthenticationResult.CredentialFailure:
-                    case AuthenticationResult.EnterpriseServerNotFound:
-                    case AuthenticationResult.VerificationFailure:
-                        Password = "";
-                        return Observable.FromAsync(PasswordValidator.ResetAsync)
-                            .Select(_ => AuthenticationResult.CredentialFailure);
-                    case AuthenticationResult.Success:
-                        return Reset.ExecuteAsync()
-                            .ContinueAfter(() => Observable.Return(AuthenticationResult.Success));
-                    default:
-                        return Observable.Throw<AuthenticationResult>(
-                            new InvalidOperationException("Unknown EnterpriseLoginResult: " + authResult));
-                }
-            });
+            return await ConnectionManager.LogIn(hostAddress, UsernameOrEmail, Password);
         }
 
-        protected async Task LoginToHostViaOAuth(HostAddress address)
+        protected async Task<IConnection> LoginToHostViaOAuth(HostAddress address)
         {
             oauthCancel = new CancellationTokenSource();
 
@@ -206,7 +163,7 @@ namespace GitHub.ViewModels.Dialog
 
             try
             {
-                await ConnectionManager.LogInViaOAuth(address, oauthCancel.Token);
+                return await ConnectionManager.LogInViaOAuth(address, oauthCancel.Token);
             }
             finally
             {

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using GitHub.Api;
 using GitHub.App;
-using GitHub.Exports;
 using GitHub.Extensions;
-using GitHub.Extensions.Reactive;
 using GitHub.Factories;
 using GitHub.Logging;
 using GitHub.Models;
@@ -20,7 +17,7 @@ using IConnection = GitHub.Models.IConnection;
 
 namespace GitHub.ViewModels.Dialog
 {
-    [ExportViewModel(ViewType=UIViewType.Gist)]
+    [Export(typeof(INewGistCreationViewModel))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class NewGistCreationViewModel : NewViewModelBase, INewGistCreationViewModel
     {

@@ -391,6 +391,9 @@
     <Compile Include="UI\WindowController.xaml.cs">
       <DependentUpon>WindowController.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialog\NewGistCreationView.xaml.cs">
+      <DependentUpon>NewGistCreationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialog\GitHubDialogWindow.xaml.cs">
       <DependentUpon>GitHubDialogWindow.xaml</DependentUpon>
     </Compile>
@@ -564,6 +567,10 @@
     </Page>
     <Page Include="UI\WindowController.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialog\NewGistCreationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialog\GitHubDialogWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

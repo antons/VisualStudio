@@ -134,6 +134,7 @@
     <Compile Include="Models\PullRequestDetailArgument.cs" />
     <Compile Include="Services\GlobalConnection.cs" />
     <Compile Include="Services\OAuthCallbackListener.cs" />
+    <Compile Include="ViewModels\Dialog\NewGistCreationViewModel.cs" />
     <Compile Include="ViewModels\Dialog\GitHubDialogWindowViewModel.cs" />
     <Compile Include="ViewModels\Dialog\LoginCredentialsViewModel.cs" />
     <Compile Include="ViewModels\Dialog\LoginTabViewModel.cs" />

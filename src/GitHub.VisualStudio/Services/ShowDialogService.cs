@@ -15,6 +15,7 @@ namespace GitHub.VisualStudio.UI.Services
     {
         readonly IGitHubServiceProvider serviceProvider;
 
+        [ImportingConstructor]
         public ShowDialogService(IGitHubServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;

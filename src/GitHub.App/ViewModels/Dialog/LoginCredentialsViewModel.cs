@@ -34,15 +34,11 @@ namespace GitHub.ViewModels.Dialog
             UpdateLoginMode();
             connectionManager.Connections.CollectionChanged += (_, __) => UpdateLoginMode();
 
-            AuthenticationResults = Observable.Merge(
+            Done = Observable.Merge(
                 loginToGitHubViewModel.Login,
                 loginToGitHubViewModel.LoginViaOAuth,
                 EnterpriseLogin.Login,
                 EnterpriseLogin.LoginViaOAuth);
-
-            Done = AuthenticationResults
-                .Where(x => x == AuthenticationResult.Success)
-                .Select(x => (object)x);
         }
 
         public string Title => Resources.LoginTitle;
@@ -60,7 +56,6 @@ namespace GitHub.ViewModels.Dialog
         readonly ObservableAsPropertyHelper<bool> isLoginInProgress;
         public bool IsLoginInProgress { get { return isLoginInProgress.Value; } }
 
-        public IObservable<AuthenticationResult> AuthenticationResults { get; private set; }
         public IObservable<object> Done { get; }
 
         void UpdateLoginMode()

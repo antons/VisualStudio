@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using GitHub.Authentication;
 using GitHub.Info;
+using GitHub.Models;
 using GitHub.Primitives;
 using GitHub.Services;
 using ReactiveUI;
@@ -35,15 +36,14 @@ namespace GitHub.ViewModels.Dialog
 
         protected override Uri BaseUri { get; }
 
-        protected override IObservable<AuthenticationResult> LogIn(object args)
+        protected override Task<IConnection> LogIn(object args)
         {
             return LogInToHost(HostAddress.GitHubDotComHostAddress);
         }
 
-        protected override async Task<AuthenticationResult> LogInViaOAuth(object args)
+        protected override async Task<IConnection> LogInViaOAuth(object args)
         {
-            await LoginToHostViaOAuth(HostAddress.GitHubDotComHostAddress);
-            return AuthenticationResult.Success;
+            return await LoginToHostViaOAuth(HostAddress.GitHubDotComHostAddress);
         }
     }
 }
