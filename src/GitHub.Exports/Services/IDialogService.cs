@@ -33,6 +33,15 @@ namespace GitHub.Services
         /// </remarks>
         Task<string> ShowReCloneDialog(IRepositoryModel repository);
 
+        /// <summary>
+        /// Shows the login dialog.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="IConnection"/> created by the login, or null if the login was
+        /// unsuccessful.
+        /// </returns>
         Task<IConnection> ShowLoginDialog();
+
+        Task ShowCreateGist();
     }
 }

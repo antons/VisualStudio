@@ -40,7 +40,9 @@ namespace GitHub.ViewModels.Dialog
                 EnterpriseLogin.Login,
                 EnterpriseLogin.LoginViaOAuth);
 
-            Closed = AuthenticationResults.Where(x => x == AuthenticationResult.Success).SelectUnit();
+            Done = AuthenticationResults
+                .Where(x => x == AuthenticationResult.Success)
+                .Select(x => (object)x);
         }
 
         public string Title => Resources.LoginTitle;
@@ -59,7 +61,7 @@ namespace GitHub.ViewModels.Dialog
         public bool IsLoginInProgress { get { return isLoginInProgress.Value; } }
 
         public IObservable<AuthenticationResult> AuthenticationResults { get; private set; }
-        public IObservable<Unit> Closed { get; }
+        public IObservable<object> Done { get; }
 
         void UpdateLoginMode()
         {

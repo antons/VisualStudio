@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Reactive;
+using ReactiveUI;
 
 namespace GitHub.ViewModels.Dialog
 {
     /// <summary>
-    /// Represents a view that can be shown in the GitHub for Visual Studio dialog.
+    /// Represents a view that can be shown in the GitHub dialog.
     /// </summary>
     public interface IDialogContentViewModel : INewViewModel
     {
@@ -14,9 +14,8 @@ namespace GitHub.ViewModels.Dialog
         string Title { get; }
 
         /// <summary>
-        /// Gets an observable that is signalled with a single value when the dialog should be
-        /// closed.
+        /// Gets an observable that is signalled with a return value when the dialog has completed.
         /// </summary>
-        IObservable<Unit> Closed { get; }
+        IObservable<object> Done { get; }
     }
 }

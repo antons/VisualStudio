@@ -35,7 +35,7 @@ namespace GitHub.ViewModels.Dialog
 
             content = credentials;
             title = this.WhenAny(x => x.Content, x => x.Value.Title).ToProperty(this, x => x.Title);
-            Closed = credentials.Closed;            
+            Done = credentials.Done;            
 
             twoFactor.WhenAnyValue(x => x.TwoFactorType)
                 .Subscribe(x =>
@@ -59,7 +59,7 @@ namespace GitHub.ViewModels.Dialog
             private set { this.RaiseAndSetIfChanged(ref content, value); }
         }
 
-        public IObservable<Unit> Closed { get; }
+        public IObservable<object> Done { get; }
 
         //// --------------------------------------------------------
         //// TODO: Sort this out before merging the MVVM refactor!!!!

@@ -9,10 +9,10 @@ namespace GitHub.VisualStudio.Views.Dialog
     /// </summary>
     public partial class GitHubDialogWindow : DialogWindow
     {
-        public GitHubDialogWindow(GitHubDialogWindowViewModel viewModel)
+        public GitHubDialogWindow(IGitHubDialogWindowViewModel viewModel)
         {
             DataContext = viewModel;
-            viewModel.Closed.Subscribe(_ => Close());
+            viewModel.Done.Subscribe(_ => Close());
             InitializeComponent();
         }
     }

@@ -1,17 +1,33 @@
 ﻿using System;
+using System.ComponentModel.Composition;
+using System.Linq;
 using System.Reactive;
-using GitHub.Primitives;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
+using GitHub.Models;
+using GitHub.Services;
 using ReactiveUI;
 
 namespace GitHub.ViewModels.Dialog
 {
-    public class GitHubDialogWindowViewModel : NewViewModelBase
+    [Export(typeof(IGitHubDialogWindowViewModel))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public sealed class GitHubDialogWindowViewModel : NewViewModelBase, IGitHubDialogWindowViewModel
     {
+        readonly IGitHubServiceProvider serviceProvider;
+        readonly Lazy<IConnectionManager> connectionManager;
         IDialogContentViewModel content;
+        Subject<object> done = new Subject<object>();
+        IDisposable subscription;
 
-        public GitHubDialogWindowViewModel()
+        [ImportingConstructor]
+        public GitHubDialogWindowViewModel(
+            IGitHubServiceProvider serviceProvider,
+            Lazy<IConnectionManager> connectionManager)
         {
-            Closed = this.WhenAnyObservable(x => x.Content.Closed);
+            this.serviceProvider = serviceProvider;
+            this.connectionManager = connectionManager;
         }
 
         public IDialogContentViewModel Content
@@ -20,15 +36,58 @@ namespace GitHub.ViewModels.Dialog
             private set { this.RaiseAndSetIfChanged(ref content, value); }
         }
 
-        public IObservable<Unit> Closed { get; }
+        public IObservable<object> Done => done;
 
-        public void Initialize(IDialogContentViewModel viewModel)
+        public void Dispose()
         {
-            Content = viewModel;
+            subscription?.Dispose();
+            subscription = null;
         }
 
-        public void Initialize(IConnectionInitializedViewModel viewModel, HostAddress hostAddress)
+        public void Start(IDialogContentViewModel viewModel)
         {
+            subscription?.Dispose();
+            Content = viewModel;
+            subscription = viewModel.Done.Subscribe(done);
+        }
+
+        public async Task StartWithConnection<T>(T viewModel)
+            where T : IDialogContentViewModel, IConnectionInitializedViewModel
+        {
+            var connections = await connectionManager.Value.GetLoadedConnections();
+            var connection = connections.FirstOrDefault(x => x.IsLoggedIn);
+
+            if (connection == null)
+            {
+                var login = CreateLoginViewModel();
+
+                subscription = login.Done.Take(1).Subscribe(async x =>
+                {
+                    var newConnection = (IConnection)x;
+
+                    if (newConnection != null)
+                    {
+                        await viewModel.InitializeAsync(newConnection);
+                        Start(viewModel);
+                    }
+                    else
+                    {
+                       done.OnNext(null);
+                    }
+                });
+
+                Content = login;
+            }
+            else
+            {
+                await viewModel.InitializeAsync(connection);
+                Start(viewModel);
+            }
+        }
+
+        INewLoginViewModel CreateLoginViewModel()
+        {
+            return serviceProvider.GetService<INewLoginViewModel>();
         }
     }
 }

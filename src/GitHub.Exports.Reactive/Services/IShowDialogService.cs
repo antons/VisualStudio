@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using GitHub.Primitives;
 using GitHub.ViewModels;
 using GitHub.ViewModels.Dialog;
@@ -19,16 +20,26 @@ namespace GitHub.Services
         /// Shows a view model in the dialog.
         /// </summary>
         /// <param name="viewModel">The view model to show.</param>
-        void Show(IDialogContentViewModel viewModel);
+        /// <returns>
+        /// The value returned by the <paramref name="viewModel"/>'s 
+        /// <see cref="IDialogContentViewModel.Done"/> observable, or null if the dialog was
+        /// canceled.
+        /// </returns>
+        Task<object> Show(IDialogContentViewModel viewModel);
 
         /// <summary>
         /// Shows a view model that requires a connection in the dialog.
         /// </summary>
         /// <param name="viewModel">The view model to show.</param>
-        /// <param name="hostAddress">
-        /// The address of the host whose connection is required. If there is no existing
+        /// <returns>
+        /// The value returned by the <paramref name="viewModel"/>'s 
+        /// <see cref="IDialogContentViewModel.Done"/> observable, or null if the dialog was
+        /// canceled.
+        /// <remarks>
+        /// The first existing connection will be used. If there is no existing
         /// connection to this address, the login dialog will be shown first.
-        /// </param>
-        void Show(IConnectionInitializedViewModel viewModel, HostAddress hostAddress);
+        /// </remarks>
+        Task<object> ShowWithConnection<TViewModel>(TViewModel viewModel)
+            where TViewModel : IDialogContentViewModel, IConnectionInitializedViewModel;
     }
 }

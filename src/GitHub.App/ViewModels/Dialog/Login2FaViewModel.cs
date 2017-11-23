@@ -135,7 +135,7 @@ namespace GitHub.ViewModels.Dialog
             set { this.RaiseAndSetIfChanged(ref authenticationCode, value); }
         }
 
-        public IObservable<Unit> Closed => null;
+        public IObservable<object> Done => null;
         public ReactiveCommand<object> OkCommand { get; private set; }
         public ReactiveCommand<object> NavigateLearnMore { get; private set; }
         public ReactiveCommand<object> ResendCodeCommand { get; private set; }

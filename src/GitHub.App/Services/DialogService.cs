@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using GitHub.Extensions;
 using GitHub.Models;
@@ -14,20 +16,24 @@ namespace GitHub.Services
     public class DialogService : IDialogService
     {
         readonly IGitHubServiceProvider serviceProvider;
+        readonly IConnectionManager connectionManager;
         readonly IUIProvider uiProvider;
         readonly IShowDialogService showDialog;
 
         [ImportingConstructor]
         public DialogService(
             IGitHubServiceProvider serviceProvider,
+            IConnectionManager connectionManager,
             IUIProvider uiProvider,
             IShowDialogService showDialog)
         {
             Guard.ArgumentNotNull(serviceProvider, nameof(serviceProvider));
+            Guard.ArgumentNotNull(connectionManager, nameof(connectionManager));
             Guard.ArgumentNotNull(uiProvider, nameof(uiProvider));
             Guard.ArgumentNotNull(showDialog, nameof(showDialog));
 
             this.serviceProvider = serviceProvider;
+            this.connectionManager = connectionManager;
             this.uiProvider = uiProvider;
             this.showDialog = showDialog;
         }
@@ -83,11 +89,16 @@ namespace GitHub.Services
             return Task.FromResult(basePath);
         }
 
-        public Task<IConnection> ShowLoginDialog()
+        public async Task<IConnection> ShowLoginDialog()
         {
             var viewModel = serviceProvider.ExportProvider.GetExportedValue<INewLoginViewModel>();
-            showDialog.Show(viewModel);
-            return Task.FromResult<IConnection>(null);
+            return (IConnection)await showDialog.Show(viewModel);
+        }
+
+        public async Task ShowCreateGist()
+        {
+            var viewModel = serviceProvider.ExportProvider.GetExportedValue<INewGistCreationViewModel>();
+            await showDialog.ShowWithConnection(viewModel);
         }
     }
 }

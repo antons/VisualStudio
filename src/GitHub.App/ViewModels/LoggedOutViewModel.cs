@@ -45,8 +45,8 @@ namespace GitHub.ViewModels
         void OnSignIn()
         {
             // Show the Sign In dialog. We don't need to listen to the outcome of this: the parent
-            // GitHubPaneViewModel will listen to RepositoryHosts.IsLoggedInToAnyHost and close
-            // this view when the user logs in.
+            // GitHubPaneViewModel will listen to the ConnectionManager and close this view when
+            // the user logs in.
             dialogService.ShowLoginDialog();
         }
 
