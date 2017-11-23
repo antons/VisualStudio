@@ -127,6 +127,7 @@
     <Compile Include="ViewModels\Dialog\ILogin2FaViewModel.cs" />
     <Compile Include="ViewModels\Dialog\ILoginCredentialsViewModel.cs" />
     <Compile Include="ViewModels\Dialog\INewLoginViewModel.cs" />
+    <Compile Include="ViewModels\Dialog\INewRepositoryCloneViewModel.cs" />
     <Compile Include="ViewModels\IGistCreationViewModel.cs" />
     <Compile Include="Services\NotificationDispatcher.cs" />
     <Compile Include="ViewModels\IHasCancel.cs" />

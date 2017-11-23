@@ -38,28 +38,10 @@ namespace GitHub.Services
             this.showDialog = showDialog;
         }
 
-        public Task<CloneDialogResult> ShowCloneDialog(IConnection connection)
+        public async Task<CloneDialogResult> ShowCloneDialog(IConnection connection)
         {
-            var controller = uiProvider.Configure(UIControllerFlow.Clone, connection);
-            var basePath = default(string);
-            var repository = default(IRepositoryModel);
-
-            controller.TransitionSignal.Subscribe(x =>
-            {
-                var vm = x.View.ViewModel as IBaseCloneViewModel;
-
-                vm?.Done.Subscribe(_ =>
-                {
-                    basePath = vm?.BaseRepositoryPath;
-                    repository = vm?.SelectedRepository;
-                });
-            });
-
-            uiProvider.RunInDialog(controller);
-
-            var result = repository != null && basePath != null ?
-                new CloneDialogResult(basePath, repository) : null;
-            return Task.FromResult(result);
+            var viewModel = serviceProvider.ExportProvider.GetExportedValue<INewRepositoryCloneViewModel>();
+            return (CloneDialogResult)await showDialog.ShowWithConnection(viewModel);
         }
 
         public Task<string> ShowReCloneDialog(IRepositoryModel repository)

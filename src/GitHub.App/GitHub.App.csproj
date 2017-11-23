@@ -142,6 +142,7 @@
     <Compile Include="ViewModels\Dialog\LoginToGitHubViewModel.cs" />
     <Compile Include="ViewModels\Dialog\NewLoginViewModel.cs" />
     <Compile Include="ViewModels\Dialog\Login2FaViewModel.cs" />
+    <Compile Include="ViewModels\Dialog\NewRepositoryCloneViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Caches\CacheIndex.cs" />
     <Compile Include="Caches\CacheItem.cs" />

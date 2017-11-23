@@ -406,6 +406,9 @@
     <Compile Include="Views\Dialog\Login2FaView.xaml.cs">
       <DependentUpon>Login2FaView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialog\NewRepositoryCloneView.xaml.cs">
+      <DependentUpon>NewRepositoryCloneView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ViewLocator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -585,6 +588,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialog\Login2FaView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialog\NewRepositoryCloneView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
