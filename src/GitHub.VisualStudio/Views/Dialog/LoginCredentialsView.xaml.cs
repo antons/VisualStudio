@@ -84,7 +84,7 @@ namespace GitHub.VisualStudio.Views.Dialog
             d(this.OneWayBind(ViewModel, vm => vm.GitHubLogin.LoginViaOAuth, v => v.dotComSsaLogInButton.Command));
             d(this.OneWayBind(ViewModel, vm => vm.GitHubLogin.IsLoggingIn, v => v.dotComLogInButton.ShowSpinner));
             d(this.OneWayBind(ViewModel, vm => vm.GitHubLogin.NavigatePricing, v => v.pricingLink.Command));
-            ////d(this.OneWayBind(ViewModel, vm => vm.GitHubLogin.Error, v => v.dotComErrorMessage.UserError));
+            d(this.OneWayBind(ViewModel, vm => vm.GitHubLogin.Error, v => v.dotComErrorMessage.UserError));
         }
 
         void SetupEnterpriseBindings(Action<IDisposable> d)
@@ -106,7 +106,7 @@ namespace GitHub.VisualStudio.Views.Dialog
             d(this.OneWayBind(ViewModel, vm => vm.EnterpriseLogin.LoginViaOAuth, v => v.enterpriseSsaLogInButton.Command));
             d(this.OneWayBind(ViewModel, vm => vm.EnterpriseLogin.IsLoggingIn, v => v.enterpriseLogInButton.ShowSpinner));
             d(this.OneWayBind(ViewModel, vm => vm.EnterpriseLogin.NavigateLearnMore, v => v.learnMoreLink.Command));
-            ////d(this.OneWayBind(ViewModel, vm => vm.EnterpriseLogin.Error, v => v.enterpriseErrorMessage.UserError));
+            d(this.OneWayBind(ViewModel, vm => vm.EnterpriseLogin.Error, v => v.enterpriseErrorMessage.UserError));
         }
 
         void SetupSelectedAndVisibleTabBindings(Action<IDisposable> d)
