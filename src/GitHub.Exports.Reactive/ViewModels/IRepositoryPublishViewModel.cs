@@ -6,7 +6,7 @@ using GitHub.Extensions;
 
 namespace GitHub.ViewModels
 {
-    public interface IRepositoryPublishViewModel : IRepositoryForm
+    public interface IRepositoryPublishViewModel : IViewModel, IRepositoryForm
     {
         IReadOnlyObservableCollection<IConnection> Connections { get; }
 

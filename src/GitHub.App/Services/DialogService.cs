@@ -49,7 +49,7 @@ namespace GitHub.Services
             }
             else
             {
-                return (CloneDialogResult)await showDialog.ShowWithConnection(viewModel);
+                return (CloneDialogResult)await showDialog.ShowWithFirstConnection(viewModel);
             }
         }
 
@@ -80,16 +80,25 @@ namespace GitHub.Services
             return Task.FromResult(basePath);
         }
 
+        public async Task ShowCreateGist()
+        {
+            var viewModel = serviceProvider.ExportProvider.GetExportedValue<INewGistCreationViewModel>();
+            await showDialog.ShowWithFirstConnection(viewModel);
+        }
+
+        public async Task ShowCreateRepositoryDialog(IConnection connection)
+        {
+            Guard.ArgumentNotNull(connection, nameof(connection));
+
+            var viewModel = serviceProvider.ExportProvider.GetExportedValue<INewRepositoryCreationViewModel>();
+            await viewModel.InitializeAsync(connection);
+            await showDialog.Show(viewModel);
+        }
+
         public async Task<IConnection> ShowLoginDialog()
         {
             var viewModel = serviceProvider.ExportProvider.GetExportedValue<INewLoginViewModel>();
             return (IConnection)await showDialog.Show(viewModel);
-        }
-
-        public async Task ShowCreateGist()
-        {
-            var viewModel = serviceProvider.ExportProvider.GetExportedValue<INewGistCreationViewModel>();
-            await showDialog.ShowWithConnection(viewModel);
         }
     }
 }

@@ -381,7 +381,7 @@ namespace GitHub.VisualStudio.TeamExplorer.Connect
 
         public void DoCreate()
         {
-            StartFlow(UIControllerFlow.Create);
+            dialogService.ShowCreateRepositoryDialog(SectionConnection);
         }
 
         public void SignOut()
@@ -391,7 +391,7 @@ namespace GitHub.VisualStudio.TeamExplorer.Connect
 
         public void Login()
         {
-            StartFlow(UIControllerFlow.Authentication);
+            dialogService.ShowLoginDialog();
         }
 
         public bool OpenRepository()

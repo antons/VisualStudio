@@ -36,10 +36,10 @@ namespace GitHub.Services
         /// <see cref="IDialogContentViewModel.Done"/> observable, or null if the dialog was
         /// canceled.
         /// <remarks>
-        /// The first existing connection will be used. If there is no existing
-        /// connection to this address, the login dialog will be shown first.
+        /// The first existing connection will be used. If there is no existing connection, the
+        /// login dialog will be shown first.
         /// </remarks>
-        Task<object> ShowWithConnection<TViewModel>(TViewModel viewModel)
+        Task<object> ShowWithFirstConnection<TViewModel>(TViewModel viewModel)
             where TViewModel : IDialogContentViewModel, IConnectionInitializedViewModel;
     }
 }

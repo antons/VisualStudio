@@ -13,7 +13,7 @@ namespace GitHub.ViewModels
     /// These are effectively the properties in common between the RepositoryPublishViewModel and the
     /// RepositoryCreationViewModel.
     /// </remarks>
-    public interface IRepositoryForm : IViewModel
+    public interface IRepositoryForm
     {
         /// <summary>
         /// The name of the repository.

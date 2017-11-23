@@ -3,9 +3,12 @@ using System.Reactive;
 using GitHub.Models;
 using ReactiveUI;
 
-namespace GitHub.ViewModels
+namespace GitHub.ViewModels.Dialog
 {
-    public interface IRepositoryCreationViewModel : IViewModel, IRepositoryForm, IRepositoryCreationTarget
+    public interface INewRepositoryCreationViewModel : IDialogContentViewModel,
+        IConnectionInitializedViewModel,
+        IRepositoryForm,
+        IRepositoryCreationTarget
     {
         /// <summary>
         /// Command that creates the repository.

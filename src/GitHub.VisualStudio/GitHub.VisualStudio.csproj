@@ -409,6 +409,9 @@
     <Compile Include="Views\Dialog\NewRepositoryCloneView.xaml.cs">
       <DependentUpon>NewRepositoryCloneView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialog\NewRepositoryCreationView.xaml.cs">
+      <DependentUpon>NewRepositoryCreationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ViewLocator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -592,6 +595,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialog\NewRepositoryCloneView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialog\NewRepositoryCreationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

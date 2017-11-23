@@ -37,7 +37,7 @@ namespace GitHub.VisualStudio.UI.Services
             return Task.FromResult(result);
         }
 
-        public async Task<object> ShowWithConnection<TViewModel>(TViewModel viewModel)
+        public async Task<object> ShowWithFirstConnection<TViewModel>(TViewModel viewModel)
             where TViewModel : IDialogContentViewModel, IConnectionInitializedViewModel
         {
             var result = default(object);
