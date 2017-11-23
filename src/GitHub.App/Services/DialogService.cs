@@ -41,7 +41,16 @@ namespace GitHub.Services
         public async Task<CloneDialogResult> ShowCloneDialog(IConnection connection)
         {
             var viewModel = serviceProvider.ExportProvider.GetExportedValue<INewRepositoryCloneViewModel>();
-            return (CloneDialogResult)await showDialog.ShowWithConnection(viewModel);
+
+            if (connection != null)
+            {
+                await viewModel.InitializeAsync(connection);
+                return (CloneDialogResult)await showDialog.Show(viewModel);
+            }
+            else
+            {
+                return (CloneDialogResult)await showDialog.ShowWithConnection(viewModel);
+            }
         }
 
         public Task<string> ShowReCloneDialog(IRepositoryModel repository)
