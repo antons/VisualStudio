@@ -145,6 +145,7 @@
     <Compile Include="ViewModels\Dialog\NewRepositoryCloneViewModel.cs" />
     <Compile Include="ViewModels\Dialog\NewRepositoryCreationViewModel.cs" />
     <Compile Include="ViewModels\NewRepositoryFormViewModel.cs" />
+    <Compile Include="ViewModels\TeamExplorer\NewRepositoryPublishViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Caches\CacheIndex.cs" />
     <Compile Include="Caches\CacheItem.cs" />

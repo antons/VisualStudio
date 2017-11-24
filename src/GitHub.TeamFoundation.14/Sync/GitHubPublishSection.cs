@@ -1,25 +1,25 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Globalization;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using GitHub.Api;
+using GitHub.Extensions;
+using GitHub.Info;
+using GitHub.Models;
+using GitHub.Primitives;
+using GitHub.Services;
 using GitHub.UI;
+using GitHub.ViewModels;
+using GitHub.ViewModels.TeamExplorer;
 using GitHub.VisualStudio.Base;
 using GitHub.VisualStudio.Helpers;
+using GitHub.VisualStudio.UI;
 using GitHub.VisualStudio.UI.Views;
 using Microsoft.TeamFoundation.Controls;
-using GitHub.Models;
-using GitHub.Services;
-using GitHub.Info;
-using ReactiveUI;
-using System.Reactive.Linq;
-using GitHub.Extensions;
-using GitHub.Api;
-using GitHub.VisualStudio.TeamExplorer;
-using System.Windows.Controls;
-using GitHub.VisualStudio.UI;
-using GitHub.ViewModels;
-using System.Globalization;
-using GitHub.Primitives;
 using Microsoft.VisualStudio;
-using System.Threading.Tasks;
+using ReactiveUI;
 
 namespace GitHub.VisualStudio.TeamExplorer.Sync
 {
@@ -102,29 +102,30 @@ namespace GitHub.VisualStudio.TeamExplorer.Sync
 
         public void ShowPublish()
         {
-            IsBusy = true;
-            var uiProvider = ServiceProvider.GetService<IUIProvider>();
-            var controller = uiProvider.Configure(UIControllerFlow.Publish);
-            bool success = false;
-            controller.ListenToCompletionState().Subscribe(s => success = s);
-
-            controller.TransitionSignal.Subscribe(data =>
-            {
-                var vm = (IHasBusy)data.View.ViewModel;
-                SectionContent = data.View;
-                vm.WhenAnyValue(x => x.IsBusy).Subscribe(x => IsBusy = x);
-            },
-            () =>
-            {
-                // there's no real cancel button in the publish form, but if support a back button there, then we want to hide the form
-                IsVisible = false;
-                if (success)
+            var factory = ServiceProvider.GetService<IExportFactoryProvider>();
+            var viewModel = ServiceProvider.GetService<INewRepositoryPublishViewModel>();
+            var busy = viewModel.WhenAnyValue(x => x.IsBusy).Subscribe(x => IsBusy = x);
+            var completed = viewModel.PublishRepository
+                .Where(x => x == ProgressState.Success)
+                .Subscribe(_ =>
                 {
                     ServiceProvider.TryGetService<ITeamExplorer>()?.NavigateToPage(new Guid(TeamExplorerPageIds.Home), null);
                     HandleCreatedRepo(ActiveRepo);
-                }
-            });
-            uiProvider.Run(controller);
+                });
+
+            var view = factory.CreateNewView(typeof(INewRepositoryPublishViewModel))?.Value;
+            view.DataContext = viewModel;
+            SectionContent = view;
+
+            Observable.FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
+                x => view.Unloaded += x,
+                x => view.Unloaded -= x)
+                .Take(1)
+                .Subscribe(_ =>
+                {
+                    busy.Dispose();
+                    completed.Dispose();
+                });
         }
 
         void HandleCreatedRepo(ILocalRepositoryModel newrepo)

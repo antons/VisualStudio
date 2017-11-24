@@ -166,6 +166,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="ViewModels\NewViewModelBase.cs" />
+    <Compile Include="ViewModels\TeamExplorer\INewRepositoryPublishViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Factories\IApiClientFactory.cs" />
