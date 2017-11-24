@@ -3,11 +3,14 @@ using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Linq;
 using System.Runtime.InteropServices;
+using System.Windows;
 using GitHub.Extensions;
 using GitHub.Logging;
+using GitHub.Models;
 using GitHub.Services;
 using GitHub.UI;
 using GitHub.ViewModels;
+using GitHub.ViewModels.GitHubPane;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ReactiveUI;
@@ -27,15 +30,16 @@ namespace GitHub.VisualStudio.UI
     /// </para>
     /// </remarks>
     [Guid(GitHubPaneGuid)]
-    public class GitHubPane : ToolWindowPane, IServiceProviderAware, IViewHost
+    public class GitHubPane : ToolWindowPane, IServiceProviderAware
     {
         public const string GitHubPaneGuid = "6b0fdc0a-f28e-47a0-8eed-cc296beff6d2";
         bool initialized = false;
         IDisposable viewSubscription;
+        INewGitHubPaneViewModel viewModel;
 
-        IView View
+        FrameworkElement View
         {
-            get { return Content as IView; }
+            get { return Content as FrameworkElement; }
             set
             {
                 viewSubscription?.Dispose();
@@ -43,7 +47,7 @@ namespace GitHub.VisualStudio.UI
 
                 Content = value;
 
-                viewSubscription = value.WhenAnyValue(x => x.ViewModel)
+                viewSubscription = value.WhenAnyValue(x => x.DataContext)
                     .SelectMany(x =>
                     {
                         var pane = x as IGitHubPaneViewModel;
@@ -66,9 +70,15 @@ namespace GitHub.VisualStudio.UI
             };
             ToolBar = new CommandID(Guids.guidGitHubToolbarCmdSet, PkgCmdIDList.idGitHubToolbar);
             ToolBarLocation = (int)VSTWT_LOCATION.VSTWT_TOP;
+
             var provider = GitHub.VisualStudio.Services.GitHubServiceProvider;
-            var uiProvider = provider.GetServiceSafe<IUIProvider>();
-            View = uiProvider.GetView(Exports.UIViewType.GitHubPane);
+            var factory = provider.GetService<IExportFactoryProvider>();
+
+            viewModel = provider.ExportProvider.GetExportedValue<INewGitHubPaneViewModel>();
+            viewModel.InitializeAsync(this).Forget();
+
+            View = factory.CreateNewView(typeof(INewGitHubPaneViewModel)).Value;
+            View.DataContext = viewModel;
         }
 
         public override bool SearchEnabled => true;
@@ -85,38 +95,33 @@ namespace GitHub.VisualStudio.UI
             {
                 initialized = true;
 
-                var vm = View.ViewModel as IServiceProviderAware;
+                var vm = viewModel as IServiceProviderAware;
                 Log.Assert(vm != null, "vm != null");
                 vm?.Initialize(serviceProvider);
             }
         }
 
-        public void ShowView(ViewWithData data)
-        {
-            View.ViewModel?.Initialize(data);
-        }
-
         [SuppressMessage("Microsoft.Design", "CA1061:DoNotHideBaseClassMethods", Justification = "WTF CA, I'm overriding!")]
         public override IVsSearchTask CreateSearch(uint dwCookie, IVsSearchQuery pSearchQuery, IVsSearchCallback pSearchCallback)
         {
-            var pane = View.ViewModel as IGitHubPaneViewModel;
+            ////var pane = View.ViewModel as IGitHubPaneViewModel;
 
-            if (pane != null)
-            {
-                return new SearchTask(pane, dwCookie, pSearchQuery, pSearchCallback);
-            }
+            ////if (pane != null)
+            ////{
+            ////    return new SearchTask(pane, dwCookie, pSearchQuery, pSearchCallback);
+            ////}
 
             return null;
         }
 
         public override void ClearSearch()
         {
-            var pane = View.ViewModel as IGitHubPaneViewModel;
+            ////var pane = View.ViewModel as IGitHubPaneViewModel;
 
-            if (pane != null)
-            {
-                pane.SearchQuery = null;
-            }
+            ////if (pane != null)
+            ////{
+            ////    pane.SearchQuery = null;
+            ////}
         }
 
         public override void OnToolWindowCreated()
@@ -127,8 +132,8 @@ namespace GitHub.VisualStudio.UI
                 (int)__VSFPROPID5.VSFPROPID_SearchPlacement,
                 __VSSEARCHPLACEMENT.SP_STRETCH) ?? 0);
 
-            var pane = View.ViewModel as IGitHubPaneViewModel;
-            UpdateSearchHost(pane?.IsSearchEnabled ?? false, pane?.SearchQuery);
+            ////var pane = View.ViewModel as IGitHubPaneViewModel;
+            ////UpdateSearchHost(pane?.IsSearchEnabled ?? false, pane?.SearchQuery);
         }
 
         void UpdateSearchHost(bool enabled, string query)

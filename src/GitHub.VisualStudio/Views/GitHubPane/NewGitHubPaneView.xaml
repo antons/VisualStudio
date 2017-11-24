@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="GitHub.VisualStudio.Views.GitHubPane.NewGitHubPaneView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GitHub.ViewModels;assembly=GitHub.Exports.Reactive"
+             xmlns:views="clr-namespace:GitHub.VisualStudio.Views"
+             Content="{Binding Content}">
+  <UserControl.Resources>
+    <views:ViewLocator x:Key="viewLocator"/>
+    <DataTemplate DataType="{x:Type vm:NewViewModelBase}">
+      <ContentControl Content="{Binding Converter={StaticResource viewLocator}}"/>
+    </DataTemplate>
+  </UserControl.Resources>
+</UserControl>

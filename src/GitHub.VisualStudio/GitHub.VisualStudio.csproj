@@ -415,6 +415,9 @@
     <Compile Include="Views\Dialog\RepositoryRecloneView.xaml.cs">
       <DependentUpon>RepositoryRecloneView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\GitHubPane\NewGitHubPaneView.xaml.cs">
+      <DependentUpon>NewGitHubPaneView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TeamExplorer\NewRepositoryPublishView.xaml.cs">
       <DependentUpon>NewRepositoryPublishView.xaml</DependentUpon>
     </Compile>
@@ -611,6 +614,10 @@
     <Page Include="Views\Dialog\RepositoryRecloneView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GitHubPane\NewGitHubPaneView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TeamExplorer\NewRepositoryPublishView.xaml">
       <Generator>MSBuild:Compile</Generator>
