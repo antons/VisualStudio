@@ -1,12 +1,8 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using GitHub.Extensions;
 using GitHub.Models;
-using GitHub.UI;
-using GitHub.ViewModels;
 using GitHub.ViewModels.Dialog;
 
 namespace GitHub.Services
@@ -53,31 +49,13 @@ namespace GitHub.Services
             }
         }
 
-        public Task<string> ShowReCloneDialog(IRepositoryModel repository)
+        public async Task<string> ShowReCloneDialog(IRepositoryModel repository)
         {
             Guard.ArgumentNotNull(repository, nameof(repository));
 
-            var controller = uiProvider.Configure(UIControllerFlow.ReClone);
-            var basePath = default(string);
-
-            controller.TransitionSignal.Subscribe(x =>
-            {
-                var vm = x.View.ViewModel as IBaseCloneViewModel;
-
-                if (vm != null)
-                {
-                    vm.SelectedRepository = repository;
-                }
-
-                vm.Done.Subscribe(_ =>
-                {
-                    basePath = vm?.BaseRepositoryPath;
-                });
-            });
-
-            uiProvider.RunInDialog(controller);
-
-            return Task.FromResult(basePath);
+            var viewModel = serviceProvider.ExportProvider.GetExportedValue<IRepositoryRecloneViewModel>();
+            viewModel.SelectedRepository = repository;
+            return (string)await showDialog.ShowWithFirstConnection(viewModel);
         }
 
         public async Task ShowCreateGist()

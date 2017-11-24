@@ -412,6 +412,9 @@
     <Compile Include="Views\Dialog\NewRepositoryCreationView.xaml.cs">
       <DependentUpon>NewRepositoryCreationView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialog\RepositoryRecloneView.xaml.cs">
+      <DependentUpon>RepositoryRecloneView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TeamExplorer\NewRepositoryPublishView.xaml.cs">
       <DependentUpon>NewRepositoryPublishView.xaml</DependentUpon>
     </Compile>
@@ -602,6 +605,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Dialog\NewRepositoryCreationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Dialog\RepositoryRecloneView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
