@@ -30,6 +30,7 @@ namespace GitHub.ViewModels.Dialog
             IPage1ViewModel page1,
             IPage2ViewModel page2)
         {
+            Content = page1;
             page1.Next.Subscribe(_ => Content = page2);
             page2.Previous.Subscribe(_ => Content = page1);
             Done = Observable.Merge(page2.Done, page2.Done);
