@@ -13,13 +13,11 @@ namespace GitHub.ViewModels.Dialog
 {
     [Export(typeof(INewLoginViewModel))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class NewLoginViewModel : NewViewModelBase, INewLoginViewModel
+    public class NewLoginViewModel : PagedDialogViewModelBase, INewLoginViewModel
     {
         readonly ILoginCredentialsViewModel credentials;
         readonly ILogin2FaViewModel twoFactor;
         readonly IDelegatingTwoFactorChallengeHandler twoFactorHandler;
-        IDialogContentViewModel content;
-        ObservableAsPropertyHelper<string> title;
 
         [ImportingConstructor]
         public NewLoginViewModel(
@@ -33,8 +31,7 @@ namespace GitHub.ViewModels.Dialog
 
             twoFactorHandler.SetViewModel(new TwoFactorHandlerThunk(this));
 
-            content = credentials;
-            title = this.WhenAny(x => x.Content, x => x.Value.Title).ToProperty(this, x => x.Title);
+            Content = credentials;
             Done = credentials.Done;            
 
             twoFactor.WhenAnyValue(x => x.TwoFactorType)
@@ -51,15 +48,7 @@ namespace GitHub.ViewModels.Dialog
                 });
         }
 
-        public string Title => title.Value;
-
-        public IDialogContentViewModel Content
-        {
-            get { return content; }
-            private set { this.RaiseAndSetIfChanged(ref content, value); }
-        }
-
-        public IObservable<object> Done { get; }
+        public override IObservable<object> Done { get; }
 
         //// --------------------------------------------------------
         //// TODO: Sort this out before merging the MVVM refactor!!!!

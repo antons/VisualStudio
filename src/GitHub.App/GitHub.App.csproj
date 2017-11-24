@@ -144,6 +144,7 @@
     <Compile Include="ViewModels\Dialog\Login2FaViewModel.cs" />
     <Compile Include="ViewModels\Dialog\NewRepositoryCloneViewModel.cs" />
     <Compile Include="ViewModels\Dialog\NewRepositoryCreationViewModel.cs" />
+    <Compile Include="ViewModels\Dialog\PagedDialogViewModelBase.cs" />
     <Compile Include="ViewModels\NewRepositoryFormViewModel.cs" />
     <Compile Include="ViewModels\TeamExplorer\NewRepositoryPublishViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
