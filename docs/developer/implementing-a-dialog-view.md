@@ -105,12 +105,13 @@ showDialog.Show(viewModel)
 Creating a view model like this may be the right thing to do, but it's not very reusable or testable. If you want your dialog to be easy reusable, add a method to `DialogService`:
 
 ```csharp
-        public async Task ShowExampleDialog()
-        {
-            var viewModel = serviceProvider.ExportProvider
-              .GetExportedValue<IExampleDialogViewModel>();
-            await showDialog.Show(viewModel);
-        }
+public async Task ShowExampleDialog()
+{
+    var viewModel = serviceProvider.ExportProvider.GetExportedValue<IExampleDialogViewModel>();
+    await showDialog.Show(viewModel);
+}
 ```
 
 Obviously, add this method to `IDialogService` too.
+
+Note that these methods are `async` - this means that if you need to do asynchronous initialization of your view model, you can do it here before calling `showDialog`.
