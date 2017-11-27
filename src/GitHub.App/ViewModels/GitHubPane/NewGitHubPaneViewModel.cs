@@ -73,6 +73,7 @@ namespace GitHub.ViewModels.GitHubPane
         {
             Guard.ArgumentNotNull(paneServiceProvider, nameof(paneServiceProvider));
 
+            teServiceHolder.ServiceProvider = paneServiceProvider;
             await RepositoryChanged(teServiceHolder.ActiveRepo);
             teServiceHolder.Subscribe(this, x => RepositoryChanged(x).Forget());
         }

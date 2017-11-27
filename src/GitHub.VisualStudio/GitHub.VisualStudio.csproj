@@ -424,6 +424,9 @@
     <Compile Include="Views\GitHubPane\NewPullRequestListView.xaml.cs">
       <DependentUpon>NewPullRequestListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\GitHubPane\NewPullRequestDetailView.xaml.cs">
+      <DependentUpon>NewPullRequestDetailView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TeamExplorer\NewRepositoryPublishView.xaml.cs">
       <DependentUpon>NewRepositoryPublishView.xaml</DependentUpon>
     </Compile>
@@ -630,6 +633,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GitHubPane\NewPullRequestListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GitHubPane\NewPullRequestDetailView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

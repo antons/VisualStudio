@@ -70,15 +70,6 @@ namespace GitHub.VisualStudio.UI
             };
             ToolBar = new CommandID(Guids.guidGitHubToolbarCmdSet, PkgCmdIDList.idGitHubToolbar);
             ToolBarLocation = (int)VSTWT_LOCATION.VSTWT_TOP;
-
-            var provider = GitHub.VisualStudio.Services.GitHubServiceProvider;
-            var factory = provider.GetService<IExportFactoryProvider>();
-
-            viewModel = provider.ExportProvider.GetExportedValue<INewGitHubPaneViewModel>();
-            viewModel.InitializeAsync(this).Forget();
-
-            View = factory.CreateNewView(typeof(INewGitHubPaneViewModel)).Value;
-            View.DataContext = viewModel;
         }
 
         public override bool SearchEnabled => true;
@@ -93,11 +84,16 @@ namespace GitHub.VisualStudio.UI
         {
             if (!initialized)
             {
-                initialized = true;
+                var provider = VisualStudio.Services.GitHubServiceProvider;
+                var teServiceHolder = provider.GetService<ITeamExplorerServiceHolder>();
+                teServiceHolder.ServiceProvider = serviceProvider;
 
-                var vm = viewModel as IServiceProviderAware;
-                Log.Assert(vm != null, "vm != null");
-                vm?.Initialize(serviceProvider);
+                var factory = provider.GetService<IExportFactoryProvider>();
+                viewModel = provider.ExportProvider.GetExportedValue<INewGitHubPaneViewModel>();
+                ThreadHelper.JoinableTaskFactory.Run(() => viewModel.InitializeAsync(serviceProvider));
+
+                View = factory.CreateNewView(typeof(INewGitHubPaneViewModel)).Value;
+                View.DataContext = viewModel;
             }
         }
 
