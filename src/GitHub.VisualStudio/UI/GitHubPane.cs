@@ -4,11 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
-using GitHub.Extensions;
-using GitHub.Logging;
 using GitHub.Models;
 using GitHub.Services;
-using GitHub.UI;
 using GitHub.ViewModels;
 using GitHub.ViewModels.GitHubPane;
 using Microsoft.VisualStudio.Shell;
@@ -17,7 +14,6 @@ using ReactiveUI;
 
 namespace GitHub.VisualStudio.UI
 {
-
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
     /// </summary>
@@ -50,10 +46,11 @@ namespace GitHub.VisualStudio.UI
                 viewSubscription = value.WhenAnyValue(x => x.DataContext)
                     .SelectMany(x =>
                     {
-                        var pane = x as IGitHubPaneViewModel;
+                        var pane = x as INewGitHubPaneViewModel;
                         return pane?.WhenAnyValue(p => p.IsSearchEnabled, p => p.SearchQuery)
                             ?? Observable.Return(Tuple.Create<bool, string>(false, null));
                     })
+                    .ObserveOn(RxApp.MainThreadScheduler)
                     .Subscribe(x => UpdateSearchHost(x.Item1, x.Item2));
             }
         }
@@ -100,24 +97,24 @@ namespace GitHub.VisualStudio.UI
         [SuppressMessage("Microsoft.Design", "CA1061:DoNotHideBaseClassMethods", Justification = "WTF CA, I'm overriding!")]
         public override IVsSearchTask CreateSearch(uint dwCookie, IVsSearchQuery pSearchQuery, IVsSearchCallback pSearchCallback)
         {
-            ////var pane = View.ViewModel as IGitHubPaneViewModel;
+            var pane = View?.DataContext as INewGitHubPaneViewModel;
 
-            ////if (pane != null)
-            ////{
-            ////    return new SearchTask(pane, dwCookie, pSearchQuery, pSearchCallback);
-            ////}
+            if (pane != null)
+            {
+                return new SearchTask(pane, dwCookie, pSearchQuery, pSearchCallback);
+            }
 
             return null;
         }
 
         public override void ClearSearch()
         {
-            ////var pane = View.ViewModel as IGitHubPaneViewModel;
+            var pane = View?.DataContext as INewGitHubPaneViewModel;
 
-            ////if (pane != null)
-            ////{
-            ////    pane.SearchQuery = null;
-            ////}
+            if (pane != null)
+            {
+                pane.SearchQuery = null;
+            }
         }
 
         public override void OnToolWindowCreated()
@@ -128,8 +125,8 @@ namespace GitHub.VisualStudio.UI
                 (int)__VSFPROPID5.VSFPROPID_SearchPlacement,
                 __VSSEARCHPLACEMENT.SP_STRETCH) ?? 0);
 
-            ////var pane = View.ViewModel as IGitHubPaneViewModel;
-            ////UpdateSearchHost(pane?.IsSearchEnabled ?? false, pane?.SearchQuery);
+            var pane = View?.DataContext as INewGitHubPaneViewModel;
+            UpdateSearchHost(pane?.IsSearchEnabled ?? false, pane?.SearchQuery);
         }
 
         void UpdateSearchHost(bool enabled, string query)
@@ -147,10 +144,10 @@ namespace GitHub.VisualStudio.UI
 
         class SearchTask : VsSearchTask
         {
-            readonly IGitHubPaneViewModel viewModel;
+            readonly INewGitHubPaneViewModel viewModel;
 
             public SearchTask(
-                IGitHubPaneViewModel viewModel,
+                INewGitHubPaneViewModel viewModel,
                 uint dwCookie,
                 IVsSearchQuery pSearchQuery,
                 IVsSearchCallback pSearchCallback)

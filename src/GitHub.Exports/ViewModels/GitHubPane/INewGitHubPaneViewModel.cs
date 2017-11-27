@@ -20,9 +20,19 @@ namespace GitHub.ViewModels.GitHubPane
         INewViewModel Content { get; }
 
         /// <summary>
+        /// Gets a value indicating whether search is available on the current page.
+        /// </summary>
+        bool IsSearchEnabled { get; }
+
+        /// <summary>
         /// Gets the local repository.
         /// </summary>
         ILocalRepositoryModel LocalRepository { get; }
+
+        /// <summary>
+        /// Gets or sets the search query for the current page.
+        /// </summary>
+        string SearchQuery { get; set; }
 
         /// <summary>
         /// Gets the title to display in the GitHub pane header.

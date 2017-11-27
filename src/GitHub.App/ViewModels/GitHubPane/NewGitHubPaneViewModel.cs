@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GitHub.Api;
 using GitHub.Extensions;
+using GitHub.Helpers;
 using GitHub.Info;
 using GitHub.Models;
 using GitHub.Primitives;
@@ -32,12 +33,14 @@ namespace GitHub.ViewModels.GitHubPane
         readonly IUsageTracker usageTracker;
         readonly INavigationViewModel navigator;
         readonly SemaphoreSlim navigating = new SemaphoreSlim(1);
+        readonly ObservableAsPropertyHelper<bool> isSearchEnabled;
         readonly ObservableAsPropertyHelper<string> title;
         readonly ReactiveCommand<Unit> refresh;
         readonly ReactiveCommand<Unit> showPullRequests;
         readonly ReactiveCommand<object> openInBrowser;
         INewViewModel content;
         ILocalRepositoryModel localRepository;
+        string searchQuery;
 
         [ImportingConstructor]
         public NewGitHubPaneViewModel(
@@ -76,6 +79,10 @@ namespace GitHub.ViewModels.GitHubPane
                 .Select(x => x ?? "GitHub")
                 .ToProperty(this, x => x.Title);
 
+            isSearchEnabled = currentPage
+                .Select(x => x is INewSearchablePanePageViewModel)
+                .ToProperty(this, x => x.IsSearchEnabled);
+
             refresh = ReactiveCommand.CreateAsyncTask(
                 currentPage.SelectMany(x => x?.WhenAnyValue(
                         y => y.IsLoading,
@@ -93,6 +100,11 @@ namespace GitHub.ViewModels.GitHubPane
 
             navigator.WhenAnyObservable(x => x.Content.NavigationRequested)
                 .Subscribe(x => NavigateTo(x).Forget());
+
+            this.WhenAnyValue(x => x.SearchQuery)
+                .Where(x => navigator.Content != null)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x => ((INewSearchablePanePageViewModel)navigator.Content).SearchQuery = x);
         }
 
         public IConnection Connection
@@ -107,10 +119,18 @@ namespace GitHub.ViewModels.GitHubPane
             protected set { this.RaiseAndSetIfChanged(ref content, value); }
         }
 
+        public bool IsSearchEnabled => isSearchEnabled.Value;
+
         public ILocalRepositoryModel LocalRepository
         {
             get { return localRepository; }
             private set { this.RaiseAndSetIfChanged(ref localRepository, value); }
+        }
+
+        public string SearchQuery
+        {
+            get { return searchQuery; }
+            set { this.RaiseAndSetIfChanged(ref searchQuery, value); }
         }
 
         public string Title => title.Value;
