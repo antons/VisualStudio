@@ -152,8 +152,6 @@
     <Compile Include="Services\IUsageService.cs" />
     <Compile Include="Settings\PkgCmdID.cs" />
     <Compile Include="ViewModels\GitHubPane\INewGitHubPaneViewModel.cs" />
-    <Compile Include="ViewModels\GitHubPane\INewPanePageViewModel.cs" />
-    <Compile Include="ViewModels\GitHubPane\INewSearchablePageViewModel.cs" />
     <Compile Include="ViewModels\IConnectionInitializedViewModel.cs" />
     <Compile Include="ViewModels\IGitHubPaneViewModel.cs" />
     <Compile Include="ViewModels\IHasErrorState.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using GitHub.Models;
 using ReactiveUI;
@@ -10,6 +11,8 @@ namespace GitHub.ViewModels.GitHubPane
     /// </summary>
     public abstract class NewPanePageViewModelBase : NewViewModelBase, INewPanePageViewModel
     {
+        static readonly Uri paneUri = new Uri("github://pane");
+        Subject <Uri> navigate = new Subject<Uri>();
         bool isBusy;
         string title;
 
@@ -34,10 +37,17 @@ namespace GitHub.ViewModels.GitHubPane
             protected set { this.RaiseAndSetIfChanged(ref title, value); }
         }
 
-        /// <inheritdoc/>
-        public abstract Task InitializeAsync(ILocalRepositoryModel repository, IConnection connection);
+        public IObservable<Uri> NavigationRequested => navigate;
 
         /// <inheritdoc/>
         public abstract Task Refresh();
+
+        /// <summary>
+        /// Sends a requests to navigate to a new page.
+        /// </summary>
+        /// <param name="uri">
+        /// The path portion of the URI of the new page, e.g. "pulls".
+        /// </param>
+        protected void NavigateTo(string uri) => navigate.OnNext(new Uri(paneUri, uri));
     }
 }

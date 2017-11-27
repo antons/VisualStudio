@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:cache="clr-namespace:GitHub.UI.Helpers;assembly=GitHub.UI"
                     xmlns:i18n="clr-namespace:GitHub.VisualStudio.UI;assembly=GitHub.VisualStudio.UI"
-                    xmlns:local="clr-namespace:GitHub.VisualStudio.UI.Views"
+                    xmlns:local="clr-namespace:GitHub.VisualStudio.Views.GitHubPane"
                     xmlns:models="clr-namespace:GitHub.Models;assembly=GitHub.Exports"
                     xmlns:viewmodels="clr-namespace:GitHub.ViewModels;assembly=GitHub.Exports.Reactive"
                     xmlns:vsui="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
@@ -59,7 +59,7 @@
             Margin="0,-3,5,0"
             Content="{Binding Title}"
             ToolTip="{Binding Title}"
-            Command="{Binding ViewModel.OpenPullRequest, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PullRequestListView}}}"
+            Command="{Binding ViewModel.OpenPullRequest, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:NewPullRequestListView}}}"
             CommandParameter="{Binding Number}"/>
         
         <ui:OcticonImage x:Name="comment_icon"
@@ -108,7 +108,7 @@
         </Grid.ColumnDefinitions>
         <Button x:Name="prHashtagLink"
                 Grid.Column="0"
-                Command="{Binding ViewModel.OpenPullRequestOnGitHub, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PullRequestListView}}}"
+                Command="{Binding ViewModel.OpenPullRequestOnGitHub, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:NewPullRequestListView}}}"
                 CommandParameter="{Binding Number}"
                 Content="{Binding Number}"
                 ToolTip="{x:Static prop:Resources.OpenPROnGitHubToolTip}"

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using GitHub.App;
 using GitHub.Collections;
-using GitHub.Exports;
 using GitHub.Extensions;
 using GitHub.Factories;
 using GitHub.Logging;
@@ -101,7 +100,7 @@ namespace GitHub.ViewModels.GitHubPane
             constructing = false;
         }
 
-        public override async Task InitializeAsync(ILocalRepositoryModel repository, IConnection connection)
+        public async Task InitializeAsync(ILocalRepositoryModel repository, IConnection connection)
         {
             modelService = await modelServiceFactory.CreateAsync(connection);
             listSettings = settings.UIState
@@ -116,6 +115,7 @@ namespace GitHub.ViewModels.GitHubPane
                 new[] { remoteRepository };
             SelectedState = States.FirstOrDefault(x => x.Name == listSettings.SelectedState) ?? States[0];
             SelectedRepository = Repositories[0];
+            await Load();
         }
 
         public override Task Refresh() => Load();
@@ -277,12 +277,8 @@ namespace GitHub.ViewModels.GitHubPane
 
         public bool IsSearchEnabled => true;
 
-        readonly Subject<ViewWithData> navigate = new Subject<ViewWithData>();
-        public IObservable<ViewWithData> Navigate => navigate;
-
         public ReactiveCommand<object> OpenPullRequest { get; }
         public ReactiveCommand<object> CreatePullRequest { get; }
-
         public ReactiveCommand<object> OpenPullRequestOnGitHub { get; }
 
         bool disposed;
@@ -333,22 +329,14 @@ namespace GitHub.ViewModels.GitHubPane
         {
             Guard.ArgumentNotNull(pullRequest, nameof(pullRequest));
 
-            var d = new ViewWithData(UIControllerFlow.PullRequestDetail)
-            {
-                Data = new PullRequestDetailArgument
-                {
-                    RepositoryOwner = SelectedRepository.Owner,
-                    Number = (int)pullRequest,
-                }
-            };
-
-            navigate.OnNext(d);
+            var number = (int)pullRequest;
+            NavigateTo($"{SelectedRepository.Owner}/{SelectedRepository.Name}/pull/{number}");
         }
 
         void DoCreatePullRequest()
         {
             var d = new ViewWithData(UIControllerFlow.PullRequestCreation);
-            navigate.OnNext(d);
+            NavigateTo($"pull/new");
         }
 
         void DoOpenPullRequestOnGitHub(int pullRequest)

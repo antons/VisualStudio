@@ -130,7 +130,11 @@
     <Compile Include="ViewModels\Dialog\INewRepositoryCloneViewModel.cs" />
     <Compile Include="ViewModels\Dialog\INewRepositoryCreationViewModel.cs" />
     <Compile Include="ViewModels\Dialog\IRepositoryRecloneViewModel.cs" />
+    <Compile Include="ViewModels\GitHubPane\INavigationViewModel.cs" />
+    <Compile Include="ViewModels\GitHubPane\INewPanePageViewModel.cs" />
     <Compile Include="ViewModels\GitHubPane\INewPullRequestListViewModel.cs" />
+    <Compile Include="ViewModels\GitHubPane\INewSearchablePageViewModel.cs" />
+    <Compile Include="ViewModels\GitHubPane\IPullRequestDetailViewModel.cs" />
     <Compile Include="ViewModels\IGistCreationViewModel.cs" />
     <Compile Include="Services\NotificationDispatcher.cs" />
     <Compile Include="ViewModels\IHasCancel.cs" />

@@ -3,6 +3,7 @@ using GitHub.Collections;
 using GitHub.Models;
 using ReactiveUI;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace GitHub.ViewModels.GitHubPane
 {
@@ -21,5 +22,7 @@ namespace GitHub.ViewModels.GitHubPane
         ReactiveCommand<object> OpenPullRequest { get; }
         ReactiveCommand<object> CreatePullRequest { get; }
         ReactiveCommand<object> OpenPullRequestOnGitHub { get; }
+
+        Task InitializeAsync(ILocalRepositoryModel repository, IConnection connection);
     }
 }

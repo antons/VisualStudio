@@ -20,9 +20,10 @@ namespace GitHub.ViewModels.GitHubPane
         string Title { get; }
 
         /// <summary>
-        /// Refreshes the view model when first loaded.
+        /// Gets an observable that is fired with a URI when the pane wishes to navigate to another
+        /// pane.
         /// </summary>
-        Task InitializeAsync(ILocalRepositoryModel repository, IConnection connection);
+        IObservable<Uri> NavigationRequested { get; }
 
         /// <summary>
         /// Refreshes the view model.
