@@ -162,56 +162,16 @@ namespace GitHub.ViewModels.GitHubPane
             }
         }
 
-        public async Task ShowPullRequests()
+        public Task ShowPullRequests()
         {
-            await navigating.WaitAsync();
-
-            try
-            {
-                var viewModel = navigator.History.OfType<INewPullRequestListViewModel>().FirstOrDefault();
-
-                if (viewModel == null)
-                {
-                    viewModel = serviceProvider.ExportProvider.GetExport<INewPullRequestListViewModel>().Value;
-                    navigator.NavigateTo(viewModel);
-                    await viewModel.InitializeAsync(LocalRepository, Connection);
-                }
-                else
-                {
-                    navigator.NavigateTo(viewModel);
-                }
-            }
-            finally
-            {
-                navigating.Release();
-            }
+            return NavigateTo<INewPullRequestListViewModel>(x => x.InitializeAsync(LocalRepository, Connection)); 
         }
 
-        public async Task ShowPullRequest(string owner, string repo, int number)
+        public Task ShowPullRequest(string owner, string repo, int number)
         {
-            await navigating.WaitAsync();
-
-            try
-            {
-                var viewModel = navigator.History.OfType<INewPullRequestDetailViewModel>()
-                    .Where(x => x.RemoteRepositoryOwner == owner && x.LocalRepository.Name == repo && x.Number == number)
-                    .FirstOrDefault();
-
-                if (viewModel == null)
-                {
-                    viewModel = serviceProvider.ExportProvider.GetExport<INewPullRequestDetailViewModel>().Value;
-                    navigator.NavigateTo(viewModel);
-                    await viewModel.InitializeAsync(LocalRepository, Connection, owner, repo, number);
-                }
-                else
-                {
-                    navigator.NavigateTo(viewModel);
-                }
-            }
-            finally
-            {
-                navigating.Release();
-            }
+            return NavigateTo<INewPullRequestDetailViewModel>(
+                x => x.InitializeAsync(LocalRepository, Connection, owner, repo, number),
+                x => x.RemoteRepositoryOwner == owner && x.LocalRepository.Name == repo && x.Number == number);
         }
 
         OleMenuCommand BindNavigatorCommand<T>(IServiceProvider serviceProvider, int commandId, ReactiveCommand<T> command)
@@ -232,6 +192,34 @@ namespace GitHub.ViewModels.GitHubPane
                 .Subscribe(x => result.Enabled = x);
 
             return result;
+        }
+
+        async Task NavigateTo<TViewModel>(Func<TViewModel, Task> initialize, Func<TViewModel, bool> match = null)
+            where TViewModel : INewPanePageViewModel
+        {
+            await navigating.WaitAsync();
+
+            try
+            {
+                var viewModel = navigator.History
+                    .OfType<TViewModel>()
+                    .FirstOrDefault(x => match?.Invoke(x) ?? true);
+
+                if (viewModel == null)
+                {
+                    viewModel = serviceProvider.ExportProvider.GetExport<TViewModel>().Value;
+                    navigator.NavigateTo(viewModel);
+                    await initialize(viewModel);
+                }
+                else
+                {
+                    navigator.NavigateTo(viewModel);
+                }
+            }
+            finally
+            {
+                navigating.Release();
+            }
         }
 
         async Task RepositoryChanged(ILocalRepositoryModel repository)
