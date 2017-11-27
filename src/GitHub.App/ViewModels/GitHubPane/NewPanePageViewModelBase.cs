@@ -14,6 +14,7 @@ namespace GitHub.ViewModels.GitHubPane
         static readonly Uri paneUri = new Uri("github://pane");
         Subject <Uri> navigate = new Subject<Uri>();
         bool isBusy;
+        bool isLoading;
         string title;
 
         /// <summary>
@@ -28,6 +29,13 @@ namespace GitHub.ViewModels.GitHubPane
         {
             get { return isBusy; }
             protected set { this.RaiseAndSetIfChanged(ref isBusy, value); }
+        }
+
+        /// <inheritdoc/>
+        public bool IsLoading
+        {
+            get { return isLoading; }
+            protected set { this.RaiseAndSetIfChanged(ref isLoading, value); }
         }
 
         /// <inheritdoc/>

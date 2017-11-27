@@ -102,20 +102,29 @@ namespace GitHub.ViewModels.GitHubPane
 
         public async Task InitializeAsync(ILocalRepositoryModel repository, IConnection connection)
         {
-            modelService = await modelServiceFactory.CreateAsync(connection);
-            listSettings = settings.UIState
-                .GetOrCreateRepositoryState(repository.CloneUrl)
-                .PullRequests;
-            localRepository = repository;
-            remoteRepository = await modelService.GetRepository(
-                localRepository.Owner,
-                localRepository.Name);
-            Repositories = remoteRepository.IsFork ?
-                new[] { remoteRepository.Parent, remoteRepository } :
-                new[] { remoteRepository };
-            SelectedState = States.FirstOrDefault(x => x.Name == listSettings.SelectedState) ?? States[0];
-            SelectedRepository = Repositories[0];
-            await Load();
+            IsLoading = true;
+
+            try
+            {
+                modelService = await modelServiceFactory.CreateAsync(connection);
+                listSettings = settings.UIState
+                    .GetOrCreateRepositoryState(repository.CloneUrl)
+                    .PullRequests;
+                localRepository = repository;
+                remoteRepository = await modelService.GetRepository(
+                    localRepository.Owner,
+                    localRepository.Name);
+                Repositories = remoteRepository.IsFork ?
+                    new[] { remoteRepository.Parent, remoteRepository } :
+                    new[] { remoteRepository };
+                SelectedState = States.FirstOrDefault(x => x.Name == listSettings.SelectedState) ?? States[0];
+                SelectedRepository = Repositories[0];
+                await Load();
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         public override Task Refresh() => Load();

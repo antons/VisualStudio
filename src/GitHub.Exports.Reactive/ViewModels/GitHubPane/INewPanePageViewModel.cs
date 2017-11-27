@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using GitHub.Models;
 
 namespace GitHub.ViewModels.GitHubPane
 {
@@ -12,7 +11,20 @@ namespace GitHub.ViewModels.GitHubPane
         /// <summary>
         /// Gets a value indicating whether the page is busy.
         /// </summary>
+        /// <remarks>
+        /// When <see cref="IsBusy"/> is set to true, an indeterminate progress bar will be
+        /// displayed at the top of the GitHub pane but the pane contents will remain visible.
+        /// </remarks>
         bool IsBusy { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the page is loading.
+        /// </summary>
+        /// <remarks>
+        /// When <see cref="IsLoading"/> is set to true, a spinner will be displayed instead of the
+        /// pane contents.
+        /// </remarks>
+        bool IsLoading { get; }
 
         /// <summary>
         /// Gets the title to display in the pane when the page is shown.
