@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using GitHub.Api;
 using GitHub.Extensions;
 using GitHub.Helpers;
@@ -173,6 +174,10 @@ namespace GitHub.ViewModels.GitHubPane
             {
                 await ShowPullRequests();
             }
+            else if (uri.AbsolutePath == "/pull/new")
+            {
+                await ShowCreatePullRequest();
+            }
             else if ((match = pullUri.Match(uri.AbsolutePath))?.Success == true)
             {
                 var owner = match.Groups["owner"].Value;
@@ -180,6 +185,22 @@ namespace GitHub.ViewModels.GitHubPane
                 var number = int.Parse(match.Groups["number"].Value);
                 await ShowPullRequest(owner, repo, number);
             }
+            else
+            {
+                throw new NotSupportedException("Unrecognised GitHub pane URL: " + uri.AbsolutePath);
+            }
+
+            var queries = HttpUtility.ParseQueryString(uri.Query);
+
+            if (queries["refresh"] == "true")
+            {
+                await navigator.Content.Refresh();
+            }
+        }
+
+        public Task ShowCreatePullRequest()
+        {
+            return NavigateTo<INewPullRequestCreationViewModel>(x => x.InitializeAsync(LocalRepository, Connection));
         }
 
         public Task ShowPullRequests()

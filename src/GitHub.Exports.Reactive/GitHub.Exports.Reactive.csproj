@@ -134,7 +134,8 @@
     <Compile Include="ViewModels\GitHubPane\INewPanePageViewModel.cs" />
     <Compile Include="ViewModels\GitHubPane\INewPullRequestListViewModel.cs" />
     <Compile Include="ViewModels\GitHubPane\INewSearchablePageViewModel.cs" />
-    <Compile Include="ViewModels\GitHubPane\IPullRequestDetailViewModel.cs" />
+    <Compile Include="ViewModels\GitHubPane\INewPullRequestCreationViewModel.cs" />
+    <Compile Include="ViewModels\GitHubPane\INewPullRequestDetailViewModel.cs" />
     <Compile Include="ViewModels\IGistCreationViewModel.cs" />
     <Compile Include="Services\NotificationDispatcher.cs" />
     <Compile Include="ViewModels\IHasCancel.cs" />

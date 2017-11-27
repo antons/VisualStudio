@@ -352,7 +352,6 @@ namespace GitHub.ViewModels.GitHubPane
 
         void DoCreatePullRequest()
         {
-            var d = new ViewWithData(UIControllerFlow.PullRequestCreation);
             NavigateTo($"pull/new");
         }
 

@@ -151,6 +151,7 @@
     <Compile Include="ViewModels\GitHubPane\NewPullRequestListViewModel.cs" />
     <Compile Include="ViewModels\GitHubPane\NewPanePageViewModelBase.cs" />
     <Compile Include="ViewModels\GitHubPane\NewPullRequestDetailViewModel.cs" />
+    <Compile Include="ViewModels\GitHubPane\NewPullRequestCreationViewModel.cs" />
     <Compile Include="ViewModels\NewRepositoryFormViewModel.cs" />
     <Compile Include="ViewModels\TeamExplorer\NewRepositoryPublishViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />

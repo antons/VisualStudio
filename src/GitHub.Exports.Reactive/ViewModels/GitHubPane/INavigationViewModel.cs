@@ -1,4 +1,5 @@
-﻿using GitHub.ViewModels.GitHubPane;
+﻿using System;
+using GitHub.ViewModels.GitHubPane;
 using ReactiveUI;
 
 namespace GitHub.ViewModels
@@ -21,7 +22,7 @@ namespace GitHub.ViewModels
         /// <summary>
         /// Gets the back and forward history.
         /// </summary>
-        IReactiveList<INewPanePageViewModel> History { get; }
+        IReadOnlyReactiveList<INewPanePageViewModel> History { get; }
 
         /// <summary>
         /// Gets a command that navigates back in the history.
@@ -55,5 +56,19 @@ namespace GitHub.ViewModels
         /// </summary>
         /// <param name="page">The page view model.</param>
         void NavigateTo(INewPanePageViewModel page);
+
+        /// <summary>
+        /// Registers a resource for disposal when all instances of a page are removed from the
+        /// history.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <param name="dispose">The resource to dispose.</param>
+        void RegisterDispose(INewPanePageViewModel page, IDisposable dispose);
+
+        /// <summary>
+        /// Removes all instances of a page from the history.
+        /// </summary>
+        /// <param name="page">The page to remove.</param>
+        int RemoveAll(INewPanePageViewModel page);
     }
 }

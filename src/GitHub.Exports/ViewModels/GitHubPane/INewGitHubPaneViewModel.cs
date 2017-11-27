@@ -7,7 +7,7 @@ namespace GitHub.ViewModels.GitHubPane
     /// <summary>
     /// The view model for the GitHub Pane.
     /// </summary>
-    public interface INewGitHubPaneViewModel
+    public interface INewGitHubPaneViewModel : INewViewModel
     {
         /// <summary>
         /// Gets the connection to the current repository.

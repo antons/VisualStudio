@@ -1,4 +1,5 @@
 using System;
+using System.Reactive;
 using System.Threading.Tasks;
 
 namespace GitHub.ViewModels.GitHubPane
@@ -30,6 +31,11 @@ namespace GitHub.ViewModels.GitHubPane
         /// Gets the title to display in the pane when the page is shown.
         /// </summary>
         string Title { get; }
+
+        /// <summary>
+        /// Gets an observable that is fired when the pane wishes to close itself.
+        /// </summary>
+        IObservable<Unit> CloseRequested { get; }
 
         /// <summary>
         /// Gets an observable that is fired with a URI when the pane wishes to navigate to another
