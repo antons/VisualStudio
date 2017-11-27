@@ -12,7 +12,7 @@ namespace GitHub.ViewModels.GitHubPane
     /// <summary>
     /// Represents a view model for displaying details of a pull request.
     /// </summary>
-    public interface INewPullRequestDetailViewModel : INewPanePageViewModel
+    public interface INewPullRequestDetailViewModel : INewPanePageViewModel, IOpenInBrowser
     {
         /// <summary>
         /// Gets the underlying pull request model.

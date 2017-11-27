@@ -46,6 +46,7 @@ namespace GitHub.ViewModels.GitHubPane
         bool isCheckedOut;
         bool isFromFork;
         bool isInCheckout;
+        Uri webUrl;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PullRequestDetailViewModel"/> class.
@@ -245,6 +246,15 @@ namespace GitHub.ViewModels.GitHubPane
         }
 
         /// <summary>
+        /// Gets the web URL for the pull request.
+        /// </summary>
+        public Uri WebUrl
+        {
+            get { return webUrl; }
+            private set { this.RaiseAndSetIfChanged(ref webUrl, value); }
+        }
+
+        /// <summary>
         /// Gets a command that checks out the pull request locally.
         /// </summary>
         public ReactiveCommand<Unit> Checkout { get; }
@@ -312,6 +322,7 @@ namespace GitHub.ViewModels.GitHubPane
                 LocalRepository = localRepository;
                 RemoteRepositoryOwner = owner;
                 Number = number;
+                WebUrl = LocalRepository.CloneUrl.ToRepositoryUrl().Append("pull/" + number);
                 modelService = await modelServiceFactory.CreateAsync(connection);
                 await Refresh();
             }

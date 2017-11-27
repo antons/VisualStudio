@@ -119,6 +119,7 @@ namespace GitHub.ViewModels.GitHubPane
                     new[] { remoteRepository };
                 SelectedState = States.FirstOrDefault(x => x.Name == listSettings.SelectedState) ?? States[0];
                 SelectedRepository = Repositories[0];
+                WebUrl = repository.CloneUrl.ToRepositoryUrl().Append("pulls");
                 await Load();
             }
             finally
@@ -282,6 +283,13 @@ namespace GitHub.ViewModels.GitHubPane
         public IAccount EmptyUser
         {
             get { return emptyUser; }
+        }
+
+        Uri webUrl;
+        public Uri WebUrl
+        {
+            get { return webUrl; }
+            private set { this.RaiseAndSetIfChanged(ref webUrl, value); }
         }
 
         public bool IsSearchEnabled => true;

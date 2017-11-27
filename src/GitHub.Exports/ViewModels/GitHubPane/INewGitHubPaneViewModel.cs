@@ -32,7 +32,7 @@ namespace GitHub.ViewModels.GitHubPane
         /// <summary>
         /// Initializes the view model.
         /// </summary>
-        Task InitializeAsync();
+        Task InitializeAsync(IServiceProvider paneServiceProvider);
 
         /// <summary>
         /// Shows the pull reqest list in the GitHub pane.

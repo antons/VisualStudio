@@ -157,6 +157,7 @@
     <Compile Include="ViewModels\IHasErrorState.cs" />
     <Compile Include="ViewModels\IHasLoading.cs" />
     <Compile Include="ViewModels\INewViewModel.cs" />
+    <Compile Include="ViewModels\IOpenInBrowser.cs" />
     <Compile Include="ViewModels\ISearchablePageViewModel.cs" />
     <Compile Include="ViewModels\IPanePageViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />

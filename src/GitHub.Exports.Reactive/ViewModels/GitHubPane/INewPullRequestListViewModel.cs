@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GitHub.ViewModels.GitHubPane
 {
-    public interface INewPullRequestListViewModel : INewSearchablePanePageViewModel
+    public interface INewPullRequestListViewModel : INewSearchablePanePageViewModel, IOpenInBrowser
     {
         IReadOnlyList<IRemoteRepositoryModel> Repositories { get; }
         IRemoteRepositoryModel SelectedRepository { get; set; }
