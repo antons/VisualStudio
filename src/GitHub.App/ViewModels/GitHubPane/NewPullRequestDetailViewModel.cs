@@ -305,11 +305,20 @@ namespace GitHub.ViewModels.GitHubPane
                 throw new NotSupportedException();
             }
 
-            LocalRepository = localRepository;
-            RemoteRepositoryOwner = owner;
-            Number = number;
-            modelService = await modelServiceFactory.CreateAsync(connection);
-            await Refresh();
+            IsLoading = true;
+
+            try
+            {
+                LocalRepository = localRepository;
+                RemoteRepositoryOwner = owner;
+                Number = number;
+                modelService = await modelServiceFactory.CreateAsync(connection);
+                await Refresh();
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         /// <summary>
@@ -326,6 +335,7 @@ namespace GitHub.ViewModels.GitHubPane
                 Session = await sessionManager.GetSession(pullRequest);
                 Title = Resources.PullRequestNavigationItemText + " #" + pullRequest.Number;
 
+                IsBusy = true;
                 IsFromFork = !pullRequestsService.IsPullRequestFromRepository(LocalRepository, Model);
                 SourceBranchDisplayName = GetBranchDisplayName(IsFromFork, pullRequest.Head?.Label);
                 TargetBranchDisplayName = GetBranchDisplayName(IsFromFork, pullRequest.Base.Label);

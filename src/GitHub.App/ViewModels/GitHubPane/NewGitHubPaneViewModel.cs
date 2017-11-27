@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +26,9 @@ namespace GitHub.ViewModels.GitHubPane
         readonly ITeamExplorerServiceHolder teServiceHolder;
         readonly INavigationViewModel navigator;
         readonly SemaphoreSlim navigating = new SemaphoreSlim(1);
+        readonly ObservableAsPropertyHelper<string> title;
         INewViewModel content;
+        ILocalRepositoryModel localRepository;
 
         [ImportingConstructor]
         public NewGitHubPaneViewModel(
@@ -47,6 +50,17 @@ namespace GitHub.ViewModels.GitHubPane
             this.teServiceHolder = teServiceHolder;
             this.navigator = navigator;
 
+            // Gets navigator.Current if Content == navigator, otherwise null.
+            var currentPage = Observable.CombineLatest(
+                this.WhenAnyValue(x => x.Content),
+                navigator.WhenAnyValue(x => x.Content))
+                .Select(x => x[0] == navigator ? x[1] as INewPanePageViewModel : null);
+
+            title = currentPage
+                .SelectMany(x => x?.WhenAnyValue(y => y.Title) ?? Observable.Return<string>(null))
+                .Select(x => x ?? "GitHub")
+                .ToProperty(this, x => x.Title);
+
             navigator.WhenAnyObservable(x => x.Content.NavigationRequested)
                 .Subscribe(x => NavigateTo(x).Forget());
         }
@@ -65,14 +79,14 @@ namespace GitHub.ViewModels.GitHubPane
 
         public ILocalRepositoryModel LocalRepository
         {
-            get;
-            private set;
+            get { return localRepository; }
+            private set { this.RaiseAndSetIfChanged(ref localRepository, value); }
         }
 
-        public async Task InitializeAsync(IServiceProvider paneServiceProvider)
-        {
-            Guard.ArgumentNotNull(paneServiceProvider, nameof(paneServiceProvider));
+        public string Title => title.Value;
 
+        public async Task InitializeAsync()
+        {
             await RepositoryChanged(teServiceHolder.ActiveRepo);
             teServiceHolder.Subscribe(this, x => RepositoryChanged(x).Forget());
         }
@@ -117,10 +131,13 @@ namespace GitHub.ViewModels.GitHubPane
                 if (viewModel == null)
                 {
                     viewModel = serviceProvider.ExportProvider.GetExport<INewPullRequestListViewModel>().Value;
+                    navigator.NavigateTo(viewModel);
                     await viewModel.InitializeAsync(LocalRepository, Connection);
                 }
-
-                navigator.NavigateTo(viewModel);
+                else
+                {
+                    navigator.NavigateTo(viewModel);
+                }
             }
             finally
             {
@@ -141,7 +158,12 @@ namespace GitHub.ViewModels.GitHubPane
                 if (viewModel == null)
                 {
                     viewModel = serviceProvider.ExportProvider.GetExport<INewPullRequestDetailViewModel>().Value;
+                    navigator.NavigateTo(viewModel);
                     await viewModel.InitializeAsync(LocalRepository, Connection, owner, repo, number);
+                }
+                else
+                {
+                    navigator.NavigateTo(viewModel);
                 }
 
                 navigator.NavigateTo(viewModel);
